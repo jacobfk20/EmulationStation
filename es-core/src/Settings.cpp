@@ -13,6 +13,7 @@ std::vector<const char*> settings_dont_save = boost::assign::list_of
 	("Debug")
 	("DebugGrid")
 	("DebugText")
+	("ParseGamelistOnly")
 	("ShowExit")
 	("Windowed")
 	("VSync")
@@ -58,7 +59,6 @@ void Settings::setDefaults()
 	mBoolMap["IgnoreGamelist"] = false;
 	mBoolMap["HideConsole"] = true;
 	mBoolMap["QuickSystemSelect"] = true;
-	mBoolMap["SaveGamelistsOnExit"] = true;
 
 	mBoolMap["Debug"] = false;
 	mBoolMap["DebugGrid"] = false;
@@ -123,6 +123,7 @@ void Settings::loadFile()
 	{
 		LOG(LogError) << "Could not parse Settings file!\n   " << result.description();
 		return;
+		
 	}
 
 	for(pugi::xml_node node = doc.child("bool"); node; node = node.next_sibling("bool"))

@@ -22,10 +22,18 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMetaDataEd.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameScraper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistOptions.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifi.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifiConnect.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiKeyboard.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSystemSettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMenu.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiStorageInfo.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiScraperMulti.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiScraperStart.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSetupController.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiEmulatorList.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistSettings.h
 
     # Scrapers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/Scraper.h
@@ -39,6 +47,7 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/gamelist/ISimpleGameListView.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/gamelist/GridGameListView.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/SystemView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/views/SetupGamepad.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/ViewController.h
 
     # Animations
@@ -69,9 +78,17 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameScraper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistOptions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMenu.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSystemSettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiKeyboard.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifi.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifiConnect.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiStorageInfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiScraperMulti.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiScraperStart.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSetupController.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiEmulatorList.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistSettings.cpp
 
     # Scrapers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/Scraper.cpp
@@ -85,6 +102,7 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/gamelist/ISimpleGameListView.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/gamelist/GridGameListView.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/SystemView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/views/SetupGamepad.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/ViewController.cpp
 )
 
