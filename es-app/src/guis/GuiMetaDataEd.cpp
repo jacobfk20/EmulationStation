@@ -7,6 +7,7 @@
 #include "guis/GuiGameScraper.h"
 #include "guis/GuiMsgBox.h"
 #include <boost/filesystem.hpp>
+#include "SystemData.h"
 
 #include "components/TextEditComponent.h"
 #include "components/DateTimeComponent.h"
@@ -16,7 +17,7 @@
 using namespace Eigen;
 
 GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector<MetaDataDecl>& mdd, ScraperSearchParams scraperParams, 
-	const std::string& header, std::function<void()> saveCallback, std::function<void()> deleteFunc) : GuiComponent(window), 
+	const std::string& header, SystemData* system, std::function<void()> saveCallback, std::function<void()> deleteFunc) : GuiComponent(window), 
 	mScraperParams(scraperParams), 
 
 	mBackground(window, ":/frame.png"), 
@@ -28,6 +29,8 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 {
 	addChild(&mBackground);
 	addChild(&mGrid);
+
+	mSystem = system;
 
 	mHeaderGrid = std::make_shared<ComponentGrid>(mWindow, Vector2i(1, 5));
 	
@@ -176,6 +179,7 @@ void GuiMetaDataEd::save()
 			continue;
 
 		mMetaData->set(mMetaDataDecl.at(i).key, mEditors.at(i)->getValue());
+		mSystem->setMetaDataModified(true);
 	}
 
 	if(mSavedCallback)

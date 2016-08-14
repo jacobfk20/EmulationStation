@@ -44,6 +44,9 @@ void GuiScraperStart::pressedStart()
 	std::vector<SystemData*> sys = mSystems->getSelectedObjects();
 	for(auto it = sys.begin(); it != sys.end(); it++)
 	{
+		// Set this system to save on exit
+		(*it)->setMetaDataModified(true);
+
 		if((*it)->getPlatformIds().empty())
 		{
 			mWindow->pushGui(new GuiMsgBox(mWindow, 

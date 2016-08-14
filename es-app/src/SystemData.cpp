@@ -55,7 +55,10 @@ SystemData::~SystemData()
 	//save changed game data back to xml
 	if(!Settings::getInstance()->getBool("IgnoreGamelist") && Settings::getInstance()->getBool("SaveGamelistsOnExit"))
 	{
-		updateGamelist(this);
+		if (mMetaDataModified) {
+			LOG(LogInfo) << "Saving MetaData for system: " << getName();
+			updateGamelist(this);
+		}
 	}
 
 	delete mRootFolder;
@@ -321,6 +324,10 @@ bool SystemData::loadConfig()
 	}
 
 	return true;
+}
+
+void SystemData::setMetaDataModified(bool value) {
+	mMetaDataModified = value;
 }
 
 void SystemData::writeExampleConfig(const std::string& path)
