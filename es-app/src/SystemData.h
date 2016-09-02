@@ -35,9 +35,6 @@ public:
 
 	void launchGame(Window* window, FileData* game);
 
-	void setMetaDataModified(bool value);
-	bool isMetaDataModified() { return mMetaDataModified; }
-
 	static void deleteSystems();
 	static bool loadConfig(); //Load the system config file at getConfigPath(). Returns true if no errors were encountered. An example will be written if the file doesn't exist.
 	static void writeExampleConfig(const std::string& path);
@@ -76,8 +73,6 @@ private:
 	std::vector<PlatformIds::PlatformId> mPlatformIds;
 	std::string mThemeFolder;
 	std::shared_ptr<ThemeData> mTheme;
-	
-	bool mMetaDataModified = false;
 
 	void populateFolder(FileData* folder);
 
