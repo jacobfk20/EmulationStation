@@ -1,6 +1,5 @@
 #include "EmulationStation.h"
 #include "guis/GuiStorageInfo.h"
-#include "guis/GuiKeyboard.h"
 #include "Window.h"
 #include "Sound.h"
 #include "Log.h"
@@ -20,7 +19,7 @@
 #include "components/SliderComponent.h"
 #include "components/TextComponent.h"
 #include "components/OptionListComponent.h"
-//#include "components/ProgressBarComponent.h"
+#include "components/ProgressBarComponent.h"
 #include "components/MenuComponent.h"
 
 
@@ -83,19 +82,19 @@ GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(win
 		
 	// Create rows
 	// Pbar for Total used [ This feels kinda hacky..  progressbar is not well made ]
-	//pbar_total = std::make_shared<ProgressBarComponent>(mWindow, "ppp");
-	//auto tell_perc = std::make_shared<TextComponent>(mWindow, s3.str() + "%", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
-	//tell_perc->setAlignment(ALIGN_RIGHT);
-	//int pbSize = mMenu.getSize().x() * .8f;
-	//pbar_total->setSize(pbSize, mMenu.getSize().y() * .09f);
-	//pbar_total->setPosition(0, 0);
-	//pbar_total->setValue(iPerc);
-	//pbar_total->setColor(0x9999EEFF);
-	//row.addElement(pbar_total, false);
-	//row.addElement(tell_perc, true);
-	//mMenu.addRow(row);
+	pbar_total = std::make_shared<ProgressBarComponent>(mWindow, "ppp");
+	auto tell_perc = std::make_shared<TextComponent>(mWindow, s3.str() + "%", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	tell_perc->setAlignment(ALIGN_RIGHT);
+	int pbSize = mMenu.getSize().x() * .8f;
+	pbar_total->setSize(pbSize, mMenu.getSize().y() * .09f);
+	pbar_total->setPosition(0, 0);
+	pbar_total->setValue(iPerc);
+	pbar_total->setColor(0x9999EEFF);
+	row.addElement(pbar_total, false);
+	row.addElement(tell_perc, true);
+	mMenu.addRow(row);
 
-	//row.elements.clear();
+	row.elements.clear();
 		
 	auto tell_totalsize = std::make_shared<TextComponent>(mWindow, "TOTAL DISK SIZE", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
 	auto tell_totalsize_i = std::make_shared<TextComponent>(mWindow, "" + totalSizeInGb + " GB", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);

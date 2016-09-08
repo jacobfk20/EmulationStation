@@ -1,7 +1,6 @@
 
 #include "EmulationStation.h"
 #include "guis/GuiEmulatorList.h"
-#include "guis/GuiKeyboard.h"
 #include "guis/GuiSettings.h"
 #include "Window.h"
 #include "Sound.h"
@@ -23,9 +22,7 @@
 #include "components/SliderComponent.h"
 #include "components/TextComponent.h"
 #include "components/OptionListComponent.h"
-#include "components/ProgressBarComponent.h"
 #include "components/MenuComponent.h"
-#include "guis/GuiTextEditPopupKeyboard.h"
 
 namespace fs = boost::filesystem;
 
@@ -56,11 +53,11 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 			auto s = new GuiSettings(mWindow, sys->getFullName().c_str());
 
 			auto enable_system = std::make_shared<SwitchComponent>(mWindow);
-			enable_system->setState(sys->getSystemEnabled());
+			enable_system->setState(true);
 			s->addWithLabel("SHOW ON SYSTEM VIEW", enable_system);
 			s->addSaveFunc([this, enable_system, sys] {
-				sys->setSystemEnabled(enable_system->getState());
-				SystemData::saveConfig();
+				//sys->setSystemEnabled(enable_system->getState());
+				//SystemData::saveConfig();
 			});
 
 			auto change_name = std::make_shared<TextComponent>(mWindow);

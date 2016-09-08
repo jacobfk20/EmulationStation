@@ -61,7 +61,7 @@ GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMe
 
 	/// Change network settings
 	addEntry("NETWORK SETTINGS", 0x777777FF, true, [this, window] {
-		mWindow->pushGui(new GuiWifi(mWindow));
+		//mWindow->pushGui(new GuiWifi(mWindow));
 	});
 
 	addEntry("EMULATORS", 0x777777FF, true, [this, window] {

@@ -2,6 +2,7 @@
 
 #include "GuiComponent.h"
 #include "components/MenuComponent.h"
+#include "components/ProgressBarComponent.h"
 #include <functional>
 
 class GuiStorageInfo : public GuiComponent
