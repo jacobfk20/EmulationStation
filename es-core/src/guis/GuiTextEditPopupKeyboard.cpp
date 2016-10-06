@@ -45,8 +45,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 
 			// Init button and store in Vector
 			digitButtons.push_back(std::make_shared<ButtonComponent>
-				(mWindow, strName, numRow[k], [this, okCallback, k, loc] {
-				okCallback(mText->getValue());
+				(mWindow, strName, numRow[k], [this, k, loc] {
 				mText->startEditing();
 				if (mShift) mText->textInput(numRowUp[k]);
 				else mText->textInput(numRow[k]);
@@ -60,8 +59,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 		// Top row
 		for (int k = 0; k < 10; k++) {
 			kButtons.push_back(std::make_shared<ButtonComponent>
-				(mWindow, topRowUp[k], topRowUp[k], [this, okCallback, k, loc] {
-				okCallback(mText->getValue());
+				(mWindow, topRowUp[k], topRowUp[k], [this, k, loc] {
 				mText->startEditing();
 				if (mShift) mText->textInput(topRowUp[k]);
 				else mText->textInput(topRow[k]);
@@ -77,8 +75,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 			auto key = homeRowUp[k];
 			if (k == 9) key = homeRow[k];
 			hButtons.push_back(std::make_shared<ButtonComponent>
-				(mWindow, key, key, [this, okCallback, k] {
-				okCallback(mText->getValue());
+				(mWindow, key, key, [this, k] {
 				mText->startEditing();
 				if (mShift) mText->textInput(homeRowUp[k]);
 				else mText->textInput(homeRow[k]);
@@ -100,8 +97,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 		// Bottom row [Z - M]
 		for (int k = 0; k < 7; k++) {
 			bButtons.push_back(std::make_shared<ButtonComponent>
-				(mWindow, bottomRowUp[k], bottomRowUp[k], [this, okCallback, k, loc] {
-				okCallback(mText->getValue());
+				(mWindow, bottomRowUp[k], bottomRowUp[k], [this, k, loc] {
 				mText->startEditing();
 				if (mShift) mText->textInput(bottomRowUp[k]);
 				else mText->textInput(bottomRow[k]);
@@ -111,8 +107,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 
 		// Add in the last two manualy because they're special chara [,< and .>]
 		for (int k = 7; k < 9; k++) {
-			bButtons.push_back(std::make_shared<ButtonComponent>(mWindow, bottomRow[7], bottomRow[7], [this, okCallback, k] {
-				okCallback(mText->getValue());
+			bButtons.push_back(std::make_shared<ButtonComponent>(mWindow, bottomRow[7], bottomRow[7], [this, k] {
 				mText->startEditing();
 				if (mShift) mText->textInput(bottomRowUp[k]);
 				else mText->textInput(bottomRow[k]);
