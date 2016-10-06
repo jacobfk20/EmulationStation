@@ -50,7 +50,6 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInputConfig.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMsgBox.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiTextEditPopup.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiTextEditPopupKeyboard.h
 
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.h
@@ -107,7 +106,6 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInputConfig.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMsgBox.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiTextEditPopup.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiTextEditPopupKeyboard.cpp
 
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.cpp
