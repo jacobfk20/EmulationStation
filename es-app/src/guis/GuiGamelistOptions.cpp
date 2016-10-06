@@ -1,7 +1,12 @@
 #include "GuiGamelistOptions.h"
+#include "GuiGamelistSettings.h"
 #include "GuiMetaDataEd.h"
 #include "views/gamelist/IGameListView.h"
 #include "views/ViewController.h"
+#include "components/SwitchComponent.h"
+#include "components/TextComponent.h"
+#include "SystemData.h"
+#include "Log.h"
 
 GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : GuiComponent(window), 
 	mSystem(system), 
@@ -52,6 +57,17 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 	row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openMetaDataEd, this));
 	mMenu.addRow(row);
 
+	// --- SYSTEM UI SETTINGS ---
+	row.elements.clear();
+	auto settings_text = std::make_shared<TextComponent>(mWindow, "SYSTEM UI SETTINGS", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	row.addElement(settings_text, true);
+	row.addElement(makeArrow(mWindow), false);
+	row.makeAcceptInputHandler([this, system] {
+		mWindow->pushGui(new GuiGamelistSettings(mWindow, system));
+	});
+
+	mMenu.addRow(row);
+
 	// center the menu
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
 	mMenu.setPosition((mSize.x() - mMenu.getSize().x()) / 2, (mSize.y() - mMenu.getSize().y()) / 2);
@@ -65,6 +81,9 @@ GuiGamelistOptions::~GuiGamelistOptions()
 
 	// notify that the root folder was sorted
 	getGamelist()->onFileChanged(root, FILE_SORTED);
+
+	// save things
+	int saveinfo = SystemData::saveConfig();
 }
 
 void GuiGamelistOptions::openMetaDataEd()
