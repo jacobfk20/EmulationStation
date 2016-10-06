@@ -29,6 +29,9 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSystemSettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiStorageInfo.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiEmulatorList.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifi.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifiConnect.h
+
 
     # Scrapers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/Scraper.h
@@ -78,6 +81,9 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSystemSettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiStorageInfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiEmulatorList.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifi.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiWifiConnect.cpp
+
 
     # Scrapers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/Scraper.cpp
