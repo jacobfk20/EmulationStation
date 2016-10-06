@@ -5,7 +5,7 @@
 
 using namespace Eigen;
 
-GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::string& title, const std::string& initValue, 
+GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::string& title, const std::string& initValue,
 	const std::function<void(const std::string&)>& okCallback, bool multiLine, const char* acceptBtnText)
 	: GuiComponent(window), mBackground(window, ":/frame.png"), mGrid(window, Vector2i(1, 7)), mMultiLine(multiLine)
 {
@@ -18,7 +18,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 	mText = std::make_shared<TextEditComponent>(mWindow);
 	mText->setValue(initValue);
 
-	if(!multiLine)
+	if (!multiLine)
 		mText->setCursor(initValue.size());
 
 	// Header
@@ -74,8 +74,10 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 
 		// Home Row
 		for (int k = 0; k < 10; k++) {
+			auto key = homeRowUp[k];
+			if (k == 9) key = homeRow[k];
 			hButtons.push_back(std::make_shared<ButtonComponent>
-				(mWindow, homeRowUp[k], homeRowUp[k], [this, okCallback, k] {
+				(mWindow, key, key, [this, okCallback, k] {
 				okCallback(mText->getValue());
 				mText->startEditing();
 				if (mShift) mText->textInput(homeRowUp[k]);
@@ -130,10 +132,24 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 	// Accept/Cancel buttons
 	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, acceptBtnText, acceptBtnText, [this, okCallback] { okCallback(mText->getValue()); delete this; }));
 	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, "CANCEL", "discard changes", [this] { delete this; }));
+	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, "SPACE", "SPACE", [this] {
+		mText->startEditing();
+		mText->textInput(" ");
+		mText->stopEditing();
+	}));
+	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, "DEL", "DELETE A CHAR", [this] {
+		mText->startEditing();
+		mText->textInput("\b");
+		mText->stopEditing();
+	}));
 
 	// Add a/c buttons
-	mKeyboardGrid->setEntry(buttons[0], Vector2i(3, 4), true, false);
-	mKeyboardGrid->setEntry(buttons[1], Vector2i(6, 4), true, false);
+	mKeyboardGrid->setEntry(buttons[0], Vector2i(3, 4), true, false, Vector2i(1, 1));
+	mKeyboardGrid->setEntry(buttons[2], Vector2i(4, 4), true, false, Vector2i(1, 1));
+	mKeyboardGrid->setEntry(buttons[3], Vector2i(5, 4), true, false, Vector2i(1, 1));
+	mKeyboardGrid->setEntry(buttons[1], Vector2i(6, 4), true, false, Vector2i(1, 1));
+
+	//buttons[1]->setSize(buttons[1]->getSize().x(), buttons[0]->getSize().y());
 
 	mGrid.setEntry(mKeyboardGrid, Vector2i(0, 2), true, true, Vector2i(2, 5));
 
@@ -150,7 +166,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 	}
 	else {
 		// Set size based on ScreenHieght * .08f by the amount of keyboard rows there are.
-		setSize(Renderer::getScreenWidth() * 0.75f, mTitle->getFont()->getHeight() + textHeight + 40 + (Renderer::getScreenHeight() * 0.085f) * 5);
+		setSize(Renderer::getScreenWidth() * 0.75f, mTitle->getFont()->getHeight() + textHeight + 60 + (Renderer::getScreenHeight() * 0.085f) * 5);
 		setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, (Renderer::getScreenHeight() - mSize.y()) / 2);
 	}
 }
