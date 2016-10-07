@@ -10,6 +10,7 @@
 #include "guis/GuiSettings.h"
 #include "guis/GuiScraperStart.h"
 #include "guis/GuiDetectDevice.h"
+#include "guis/GuiWifi.h"
 #include "views/ViewController.h"
 
 #include <iostream>
@@ -61,7 +62,7 @@ GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMe
 
 	/// Change network settings
 	addEntry("NETWORK SETTINGS", 0x777777FF, true, [this, window] {
-		//mWindow->pushGui(new GuiWifi(mWindow));
+		mWindow->pushGui(new GuiWifi(mWindow));
 	});
 
 	addEntry("EMULATORS", 0x777777FF, true, [this, window] {
