@@ -1,6 +1,5 @@
 #include "EmulationStation.h"
 #include "guis/GuiStorageInfo.h"
-#include "guis/GuiEmulatorList.h"
 #include "guis/GuiSystemSettings.h"
 #include "Window.h"
 #include "Sound.h"
@@ -63,10 +62,6 @@ GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMe
 	/// Change network settings
 	addEntry("NETWORK SETTINGS", 0x777777FF, true, [this, window] {
 		mWindow->pushGui(new GuiWifi(mWindow));
-	});
-
-	addEntry("EMULATORS", 0x777777FF, true, [this, window] {
-		mWindow->pushGui(new GuiEmulatorList(window));
 	});
 
 	/// See storage on internal memory card.
