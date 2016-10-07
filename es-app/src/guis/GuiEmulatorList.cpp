@@ -26,7 +26,7 @@
 
 namespace fs = boost::filesystem;
 
-GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(window, "EMULATORS AND SYSTEMS"), mVersion(window)
+GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(window, "SIZE PER SYSTEM"), mVersion(window)
 {
 	// EMULATORS AND SYSTEMS
 
@@ -52,17 +52,17 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 
 			auto s = new GuiSettings(mWindow, sys->getFullName().c_str());
 
-			auto enable_system = std::make_shared<SwitchComponent>(mWindow);
-			enable_system->setState(true);
-			s->addWithLabel("SHOW ON SYSTEM VIEW", enable_system);
-			s->addSaveFunc([this, enable_system, sys] {
+			//auto enable_system = std::make_shared<SwitchComponent>(mWindow);
+			//enable_system->setState(true);
+			//s->addWithLabel("SHOW ON SYSTEM VIEW", enable_system);
+			//s->addSaveFunc([this, enable_system, sys] {
 				//sys->setSystemEnabled(enable_system->getState());
 				//SystemData::saveConfig();
-			});
+			//});
 
-			auto change_name = std::make_shared<TextComponent>(mWindow);
-			change_name->setValue(sys->getFullName());
-			s->addWithLabel("CHANGE SYSTEM NAME", change_name);
+			//auto change_name = std::make_shared<TextComponent>(mWindow);
+			//change_name->setValue(sys->getFullName());
+			//s->addWithLabel("CHANGE SYSTEM NAME", change_name);
 			//s->addSaveFunc([this, change_name, sys] {
 			//	// popup the keyboard.
 			//	mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, sys->getFullName(), change_name->getValue(), 
