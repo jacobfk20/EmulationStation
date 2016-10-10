@@ -37,11 +37,13 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 	// CONNECT TO NEW NETWORK >
 	// SHOW CURRENT WIFI INFO >
 	// ETHERNET INFO >
+	// x MANUAL SETUP > [todo?]
+	// SAVED NETWORKS > [todo]
 	// TURN WIFI ON/OFF
-	// MANUAL SETUP > [todo?]
-	// REMOVE CURRENT SETUP > [todo]
 
 	// [version]
+
+	std::string wificonnect_path = getHomePath() + "/.emulationstation/app/wifi/./wificonnect";
 
 	addEntry("CONNECT TO NEW WIFI", 0x777777FF, true, 
 		[this, window] { 
@@ -327,6 +329,59 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 		mWindow->pushGui(s);
 	});
 
+	addEntry("SAVED NETWORKS", 0x777777FF, true, [this, wificonnect_path] { 
+		// Grab network list from wpa_supplicant
+		FILE *wIPP;
+		char wip[1035];
+		std::string currentLine;
+		bool destroySelf = false;
+
+		std::string command = "sudo " + wificonnect_path + " --list";
+
+		wIPP = popen(command.c_str(), "r");
+
+		auto s = new GuiSettings(mWindow, "SAVED NETWORKS");
+
+		ComponentListRow row;
+		int netid = 1;
+
+		while (fgets(wip, sizeof(wip), wIPP) != NULL) {
+			currentLine = wip;
+			currentLine = currentLine.substr(0, currentLine.length() - 1);
+
+			row.addElement(std::make_shared<TextComponent>(mWindow, "Network: ", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(mWindow, "" + currentLine, Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+
+			row.makeAcceptInputHandler([this, currentLine, wificonnect_path, s] {
+				mWindow->pushGui(new GuiMsgBox(mWindow, "DO YOU WISH TO DELETE THIS NETWORK FROM THIS DEVICE?", "YES", [this, currentLine, wificonnect_path, s] {
+					// Delete network
+					FILE *delNetwork;
+					char pi[1035];
+					std::string cLine;
+					std::string command = "sudo " + wificonnect_path + " --remove \"" + currentLine + "\"";
+					delNetwork = popen(command.c_str(), "r");
+
+					while (fgets(pi, sizeof(pi), delNetwork) != NULL) {
+						if (pi[0] == '0') {
+							mWindow->pushGui(new GuiMsgBox(mWindow, "Succesfully deleted network", "OK"));
+							delete s;
+						}
+						else {
+							mWindow->pushGui(new GuiMsgBox(mWindow, "Could not delete network.", "OK"));
+							LOG(LogError) << "[WifiGui] " << pi;
+						}
+					}
+				}, "NO"));
+			});
+
+			s->addRow(row);
+			row.elements.clear();
+			netid++;
+		}
+
+		mWindow->pushGui(s);
+	});
+
 	addEntry("TURN WIFI ON/OFF", 0x777777FF, true, [this] {
 		mWindow->pushGui(new GuiMsgBox(mWindow, "Turn Wifi On or Off?", "ON", 
 			[] { system("sudo ifconfig wlan0 up"); },
@@ -336,11 +391,6 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			nullptr
 		));
 	});
-
-	//addEntry("SAVED NETWORKS", 0x777777FF, true, [this] { 
-	//		
-	//});
-
 
 	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
 	mVersion.setColor(0x0044FFFF);
