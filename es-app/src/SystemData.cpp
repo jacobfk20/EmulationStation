@@ -18,7 +18,8 @@ std::vector<SystemData*> SystemData::sSystemVector;
 namespace fs = boost::filesystem;
 
 SystemData::SystemData(const std::string& name, const std::string& fullName, const std::string& startPath, const std::vector<std::string>& extensions, 
-	const std::string& command, const std::vector<PlatformIds::PlatformId>& platformIds, const std::string& themeFolder)
+	const std::string& command, const std::vector<PlatformIds::PlatformId>& platformIds, const std::string& themeFolder, std::string& rawTheme,
+	bool systemEnabled, std::string viewMode, int modSize)
 {
 	mName = name;
 	mFullName = fullName;
@@ -35,6 +36,11 @@ SystemData::SystemData(const std::string& name, const std::string& fullName, con
 	mLaunchCommand = command;
 	mPlatformIds = platformIds;
 	mThemeFolder = themeFolder;
+
+	mRawTheme = rawTheme;
+	mSystemEnabled = systemEnabled;
+	mViewMode = viewMode;
+	mGridModSize = modSize;
 
 	mRootFolder = new FileData(FOLDER, mStartPath, this);
 	mRootFolder->metadata.set("name", mFullName);
@@ -223,6 +229,82 @@ std::vector<std::string> readList(const std::string& str, const char* delims = "
 	return ret;
 }
 
+/// Dump altered file to home/.emulationstation
+int SystemData::saveConfig() {
+	// To keep things normalized between es_systems and extras, this file must be destroyed and rebuilt everytime.
+	fs::path fs_path = getHomePath() + "/.emulationstation/es_systems-extra.cfg";
+	if (fs::exists(fs_path)){
+		// if it exists, destroy it.
+		LOG(LogInfo) << "Deleting old es_systems-extra.cfg";
+		fs::remove(fs_path);
+	}
+
+	// write template
+	std::ofstream file(fs_path.generic_string());
+	file << "<!-- Keeps extra configurations for systems.  Usually cosmetic -->\n"
+		"<?xml version=\"1.0\"?>\n<systemList>\n</systemList>";
+	file.close();
+
+	// convert fs_path to string
+	std::string path = fs_path.generic_string();
+
+	// Load in config file.
+	pugi::xml_document doc;
+	pugi::xml_parse_result res = doc.load_file(path.c_str());
+	pugi::xml_node node;
+
+	// Loop through all systems in system <vector>
+	bool bFound = false;
+	for (int i = 0; i < sSystemVector.size(); i++) {
+		SystemData* tSystem = sSystemVector[i];
+
+		node = doc.child("systemList");
+
+		// First, create a node for this system and set node to it.
+		node.append_child(tSystem->getName().c_str());
+		node = node.child(tSystem->getName().c_str());
+
+		// Anoying job to compare bool and strings
+		std::string sTempEnabled = "false";
+		if (tSystem->getSystemEnabled()) sTempEnabled = "true";
+
+		// Append saveable values
+		// --- fullname ---
+		node.append_child("fullname");
+		node.child("fullname").text().set(tSystem->getFullName().c_str());
+				
+		// --- Viewmode ---
+		node.append_child("viewmode");
+		node.child("viewmode").text().set(tSystem->getSystemViewMode().c_str());
+					
+		// --- Enabled ---
+		std::string bEnabled = "false";
+		if (tSystem->getSystemEnabled()) bEnabled = "true";
+		// append and save 
+		node.append_child("enabled");
+		node.child("enabled").text().set(bEnabled.c_str());
+
+		// --- Theme ---
+		node.append_child("theme");
+		node.child("theme").text().set(tSystem->getRawTheme().c_str());
+
+		// --- Grid Size mod ---
+		node.append_child("gridsize");
+		node.child("gridsize").text().set(tSystem->getGridModSize());
+	}
+	
+	// Attempt to save file
+	try {
+		doc.save_file(path.c_str());
+	}
+	catch (int e) {
+		LOG(LogError) << "Could not create new es_systems.cfg in .emulationstation.  Discarding config.";
+		return -1;
+	}
+
+	return 0;
+}
+
 //creates systems from information located in a config file
 bool SystemData::loadConfig()
 {
@@ -260,12 +342,56 @@ bool SystemData::loadConfig()
 
 	for(pugi::xml_node system = systemList.child("system"); system; system = system.next_sibling("system"))
 	{
-		std::string name, fullname, path, cmd, themeFolder;
+		std::string name, fullname, path, cmd, themeFolder, viewMode, rawtheme;
+		bool systemEnabled;
 		PlatformIds::PlatformId platformId = PlatformIds::PLATFORM_UNKNOWN;
+		int modsize = 1;
 
 		name = system.child("name").text().get();
 		fullname = system.child("fullname").text().get();
 		path = system.child("path").text().get();
+		rawtheme = system.child("theme").text().get();
+
+		// Load in extras if es_systems-extra.cfg exists
+		fs::path extras_path = getHomePath() + "/.emulationstation/es_systems-extra.cfg";
+		if (fs::exists(extras_path)) {
+			// convert fs_path to string
+			std::string ePath = extras_path.generic_string();
+
+			// Load in config file.
+			pugi::xml_document doc;
+			pugi::xml_parse_result res = doc.load_file(ePath.c_str());
+			pugi::xml_node node;
+
+			// find this system in extras
+			node = doc.child("systemList").child(name.c_str());
+
+			// Load it's extras
+			// --- System Enabled ---
+			if (node.child("enabled").text().get() != "") {
+				systemEnabled = (strcmp(node.child("enabled").text().get(), "true") == 0);
+			}
+			else {
+				systemEnabled = true;
+			}
+
+			// --- View Mode ---
+			viewMode = node.child("viewmode").text().get();
+			if (viewMode == "") {
+				viewMode = "DEFAULT";
+			}
+
+			// --- Grid Size ---
+			std::string tempmod = node.child("gridsize").text().get();
+			if (tempmod != "") modsize = std::stoi(tempmod);
+		}
+		else 
+		{
+			// If es_systems-extra.cfg doesn't exist, set defaults
+			systemEnabled = true;
+			viewMode = "DEFAULT";
+			modsize = 1;
+		}
 
 		// convert extensions list from a string into a vector of strings
 		std::vector<std::string> extensions = readList(system.child("extension").text().get());
@@ -310,7 +436,7 @@ bool SystemData::loadConfig()
 		boost::filesystem::path genericPath(path);
 		path = genericPath.generic_string();
 
-		SystemData* newSys = new SystemData(name, fullname, path, extensions, cmd, platformIds, themeFolder);
+		SystemData* newSys = new SystemData(name, fullname, path, extensions, cmd, platformIds, themeFolder, rawtheme, systemEnabled, viewMode, modsize);
 		if(newSys->getRootFolder()->getChildrenByFilename().size() == 0)
 		{
 			LOG(LogWarning) << "System \"" << name << "\" has no games! Ignoring it.";
@@ -418,6 +544,26 @@ std::string SystemData::getThemePath() const
 	// not in game folder, try theme sets
 	return ThemeData::getThemeFromCurrentSet(mThemeFolder).generic_string();
 }
+
+void SystemData::setFullName(std::string nName) {
+	mFullName = nName;
+}
+
+/// Sets the current system object to show or not.
+bool SystemData::setSystemEnabled(bool bEnabled) {
+	mSystemEnabled = bEnabled;
+}
+
+/// Set modifier size for GameGrid
+void SystemData::setGridModSize(int s) {
+	mGridModSize = s;
+}
+
+/// Sets the current system view mode
+void SystemData::setSystemViewMode(std::string newViewMode) {
+	mViewMode = newViewMode;
+}
+
 
 bool SystemData::hasGamelist() const
 {

@@ -5,6 +5,7 @@
 #include <memory>
 #include "GuiComponent.h"
 #include "components/ImageComponent.h"
+#include "components/TextComponent.h"
 #include "resources/Font.h"
 #include "Renderer.h"
 
@@ -54,8 +55,10 @@ public:
 	struct Entry
 	{
 		std::string name;
+		std::string strdata;
 		UserData object;
 		EntryData data;
+		bool isTextureLoaded = false;
 	};
 
 protected:
@@ -76,6 +79,11 @@ protected:
 	const ListLoopType mLoopType;
 
 	std::vector<Entry> mEntries;
+
+	int mTotalLoadedTextures = 0;
+	std::list<int>mLoadedTextureList;
+
+	std::shared_ptr<TextureResource> mMissingBoxartTexture;
 	
 public:
 	IList(Window* window, const ScrollTierList& tierList = LIST_SCROLL_STYLE_QUICK, const ListLoopType& loopType = LIST_PAUSE_AT_END) : GuiComponent(window), 
@@ -105,7 +113,7 @@ public:
 		onCursorChanged(CURSOR_STOPPED);
 	}
 
-	void clear()
+	virtual void clear(bool clearall = false)
 	{
 		mEntries.clear();
 		mCursor = 0;
@@ -147,6 +155,41 @@ public:
 
 		return false;
 	}
+
+	int getCursorIndex()
+	{
+		return mCursor;
+	}
+
+	// Will load an object's texture from it's stored texture string.  
+	// Can be safely called many times without reloading texture.
+	void loadTexture(int index) {
+		if (!mEntries[index].isTextureLoaded) {
+			std::string imagePath = mEntries[index].strdata;
+			if (mEntries[index].object->getType() == 2) TextureResource::get(":/folder.png");
+			else {
+				mEntries[index].data.texture = ResourceManager::getInstance()->fileExists(imagePath) ?
+					TextureResource::get(imagePath) : mMissingBoxartTexture;
+			}
+			mEntries[index].isTextureLoaded = true;
+			mLoadedTextureList.push_back(index);
+
+			// Increment LoadedTexture Count
+			mTotalLoadedTextures++;
+		}
+	}
+
+	// Sets this image back to default texture.
+	void clearImage(int index) {
+		if (mEntries[index].isTextureLoaded) {
+			if (mEntries[index].object->getType() == 2) return;
+			else mEntries[index].data.texture = TextureResource::get(":/frame.png");
+			mEntries[index].isTextureLoaded = false;
+
+			// Subtract Loaded Texture Count
+			mTotalLoadedTextures--;
+		}
+	}
 	
 	// entry management
 	void add(const Entry& e)
@@ -166,6 +209,11 @@ public:
 		}
 
 		return false;
+	}
+
+	void pop_back() {
+		mCursor = 0;
+		if (mEntries.size() > 1) mEntries.pop_back();
 	}
 
 	inline int size() const { return mEntries.size(); }
@@ -236,6 +284,12 @@ protected:
 		// actually perform the scrolling
 		for(int i = 0; i < scrollCount; i++)
 			scroll(mScrollVelocity);
+	}
+
+	void listRenderFileTitle(const Eigen::Affine3f& trans) {
+		for (int i = 0; i < mEntries.size(); i++) {
+			mEntries[i].data.title->render(trans);
+		}
 	}
 
 	void listRenderTitleOverlay(const Eigen::Affine3f& trans)

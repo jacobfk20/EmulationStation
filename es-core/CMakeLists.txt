@@ -17,6 +17,7 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Util.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/AnimationUtil.h
 
 	# Animations
 	${CMAKE_CURRENT_SOURCE_DIR}/src/animations/Animation.h
@@ -42,6 +43,7 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/SwitchComponent.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/TextComponent.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/TextEditComponent.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/GridTileComponent.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ProgressBarComponent.h
 
 	# Guis
@@ -78,6 +80,7 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Util.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Window.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/AnimationUtil.cpp
 
 	# Animations
 	${CMAKE_CURRENT_SOURCE_DIR}/src/animations/AnimationController.cpp
@@ -98,6 +101,7 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/SwitchComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/TextComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/TextEditComponent.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/GridTileComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ProgressBarComponent.cpp
 
 	# Guis
@@ -164,6 +168,9 @@ set(EMBEDDED_ASSET_SOURCES
     ${emulationstation-all_SOURCE_DIR}/data/converted/busy_1_svg.cpp
     ${emulationstation-all_SOURCE_DIR}/data/converted/busy_2_svg.cpp
     ${emulationstation-all_SOURCE_DIR}/data/converted/busy_3_svg.cpp
+	
+    ${emulationstation-all_SOURCE_DIR}/data/converted/blank_game_png.cpp
+    ${emulationstation-all_SOURCE_DIR}/data/converted/folder_png.cpp
 )
 
 list(APPEND CORE_SOURCES ${EMBEDDED_ASSET_SOURCES})
