@@ -53,13 +53,24 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			// Holds the password the user types in.
 			std::shared_ptr<GuiComponent> password;
 
+			// Check if system is already connected to a network and bail
+			FILE *fp;
+			char path[1035];
+			fp = popen("ifconfig wlan0 | grep \"inet addr:\"", "r");
+			fgets(path, sizeof(path), fp);
+			if (std::strlen(path) > 1) {
+				mWindow->pushGui(new GuiMsgBox(mWindow,
+					"Cannot scan for networks when the device is already connected to one.  You can delete the current network in SAVED NETWORKS",
+					"OK"));
+				LOG(LogWarning) << "Attemped to scan for new wireless networks but wlan0 already has an IP address.";
+				return;
+			}
+
 			// bring down wireless to refresh
 			system("sudo ifconfig wlan0 down");
 			system("sudo ifconfig wlan0 up");
 
 			// dump iwlist into a memory file
-			FILE *fp;
-			char path[1035];
 			fp = popen("sudo iwlist wlan0 scanning | grep 'SSID\\|Channel:\\|Encryption\\|Quality'", "r");
 
 			// Variables
@@ -176,6 +187,15 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 				s->addRow(row);
 				row.elements.clear();
 				
+			}
+
+			// If no networks could be found, let the user know
+			if (ssidIndex < 1) {
+				row.elements.clear();
+				auto no_network = std::make_shared<TextComponent>(mWindow, "NO NETWORKS COULD BE FOUND.", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+				no_network->setAlignment(ALIGN_CENTER);
+				row.addElement(no_network, true);
+				s->addRow(row);
 			}
 
 
@@ -338,6 +358,12 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 
 		std::string command = "sudo " + wificonnect_path + " --list";
 
+		// Check if wificonnect exists
+		if (!boost::filesystem::exists(wificonnect_path)) {
+			mWindow->pushGui(new GuiMsgBox(mWindow, "wificonnect is missing.  This is used to send wifi info to wpa_supplicant.  This should be in ~/.emulationstation/app/wifi"));
+			return;
+		}
+
 		wIPP = popen(command.c_str(), "r");
 
 		auto s = new GuiSettings(mWindow, "SAVED NETWORKS");
@@ -394,7 +420,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 
 	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
 	mVersion.setColor(0x0044FFFF);
-	mVersion.setText("GUIWIFI V 0.5 STABLE");
+	mVersion.setText("GUIWIFI V 0.51");
 	mVersion.setAlignment(ALIGN_CENTER);
 
 	addChild(&mMenu);
