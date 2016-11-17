@@ -69,6 +69,7 @@ public:
 
 	virtual unsigned char getOpacity() const;
 	virtual void setOpacity(unsigned char opacity);
+	virtual void setColor(unsigned int color) {};
 
 	const Eigen::Affine3f& getTransform();
 

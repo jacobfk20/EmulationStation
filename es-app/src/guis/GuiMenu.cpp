@@ -21,6 +21,11 @@
 #include "scrapers/GamesDBScraper.h"
 #include "scrapers/TheArchiveScraper.h"
 
+#include "animations/LaunchAnimation.h"
+#include "animations/MoveCameraAnimation.h"
+#include "animations/LambdaAnimation.h"
+#include "animations/FadeInUp.h"
+
 GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MENU"), mVersion(window)
 {
 	// MAIN MENU
@@ -266,7 +271,18 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
-	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
+	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.3f);
+
+
+	// Animation
+	auto fadeFunc = [this](float t) {
+		setOpacity(lerp<float>(0, 255, t));
+		setPosition(getPosition().x(), lerp<float>(getPosition().y(), Renderer::getScreenHeight() * .15f, t));
+	};
+
+	setOpacity(0);
+
+	setAnimation(new LambdaAnimation(fadeFunc, 200), 0);
 }
 
 void GuiMenu::onSizeChanged()

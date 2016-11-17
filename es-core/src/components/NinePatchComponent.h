@@ -24,6 +24,9 @@ public:
 
 	void onSizeChanged() override;
 
+	void setColor(unsigned int color) override;
+	void setOpacity(unsigned char opacity) override;
+
 	void fitTo(Eigen::Vector2f size, Eigen::Vector3f position = Eigen::Vector3f::Zero(), Eigen::Vector2f padding = Eigen::Vector2f::Zero());
 
 	void setImagePath(const std::string& path);
@@ -46,6 +49,8 @@ private:
 
 	Vertex* mVertices;
 	GLubyte* mColors;
+
+	unsigned char mTempOpacity = 0;
 
 	std::string mPath;
 	unsigned int mEdgeColor;
