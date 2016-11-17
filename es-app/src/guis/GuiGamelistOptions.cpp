@@ -8,6 +8,8 @@
 #include "SystemData.h"
 #include "Log.h"
 
+#include "animations/LambdaAnimation.h"
+
 GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : GuiComponent(window), 
 	mSystem(system), 
 	mMenu(window, "OPTIONS")
@@ -70,7 +72,17 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 
 	// center the menu
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
-	mMenu.setPosition((mSize.x() - mMenu.getSize().x()) / 2, (mSize.y() - mMenu.getSize().y()) / 2);
+	mMenu.setPosition((mSize.x() - mMenu.getSize().x()) / 2, (mSize.y() - mMenu.getSize().y()));
+
+	// Animation
+	auto fadeFunc = [this](float t) {
+		setOpacity(lerp<float>(0, 255, t));
+		setPosition(getPosition().x(), lerp<float>(getPosition().y(), ((mSize.y() - mMenu.getSize().y()) / 2) * -1, t));
+	};
+
+	setOpacity(0);
+
+	setAnimation(new LambdaAnimation(fadeFunc, 200), 0);
 }
 
 GuiGamelistOptions::~GuiGamelistOptions()
