@@ -4,6 +4,7 @@
 #include "components/ComponentList.h"
 #include "components/TextComponent.h"
 #include "components/ComponentGrid.h"
+#include "WindowThemeData.h"
 #include "Util.h"
 
 class ButtonComponent;
@@ -20,6 +21,8 @@ public:
 	MenuComponent(Window* window, const char* title, const std::shared_ptr<Font>& titleFont = Font::get(FONT_SIZE_LARGE));
 
 	void onSizeChanged() override;
+
+	void setTheme();
 
 	inline void addRow(const ComponentListRow& row, bool setCursorHere = false) { mList->addRow(row, setCursorHere); updateSize(); }
 

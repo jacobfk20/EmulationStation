@@ -27,6 +27,8 @@ MenuComponent::MenuComponent(Window* window, const char* title, const std::share
 	mList = std::make_shared<ComponentList>(mWindow);
 	mGrid.setEntry(mList, Vector2i(0, 1), true);
 
+	setTheme();
+
 	updateGrid();
 	updateSize();
 
@@ -37,6 +39,14 @@ void MenuComponent::setTitle(const char* title, const std::shared_ptr<Font>& fon
 {
 	mTitle->setText(strToUpper(title));
 	mTitle->setFont(font);
+}
+
+void MenuComponent::setTheme() {
+	auto wtd = WindowThemeData::getInstance()->getCurrentTheme();
+	mBackground.setCenterColor(wtd->background.color);
+	mBackground.setEdgeColor(wtd->background.color);
+	mTitle->setColor(wtd->title.color);
+	mTitle->setAlignment(wtd->title.alignment);
 }
 
 float MenuComponent::getButtonGridHeight() const
