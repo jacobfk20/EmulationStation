@@ -31,6 +31,29 @@ WindowThemeData::WindowThemeData() {
 }
 
 
+// helper
+unsigned int WindowThemeData::getHexColor(const char* str)
+{
+	ThemeException error;
+	if (!str)
+		throw error << "Empty color";
+
+	size_t len = strlen(str);
+	if (len != 6 && len != 8)
+		throw error << "Invalid color (bad length, \"" << str << "\" - must be 6 or 8)";
+
+	unsigned int val;
+	std::stringstream ss;
+	ss << str;
+	ss >> std::hex >> val;
+
+	if (len == 6)
+		val = (val << 8) | 0xFF;
+
+	return val;
+}
+
+
 std::vector<std::string> WindowThemeData::getThemeNames() {
 	std::vector<std::string> vNames;
 
@@ -80,7 +103,7 @@ bool WindowThemeData::parseFile(std::string path) {
 	// get text-default:
 	pugi::xml_node node = root.child("text-default");
 	if (node) {
-		if (node.child("color")) wintheme.default_text.color = node.child("color").text().as_int();
+		if (node.child("color")) wintheme.default_text.color = getHexColor(node.child("color").text().as_string());
 		if (node.child("path")) wintheme.default_text.path = node.child("path").text().as_string();
 	}
 
@@ -90,14 +113,14 @@ bool WindowThemeData::parseFile(std::string path) {
 	// Get background theme
 	pugi::xml_node element = window.child("background");
 	if (element) {
-		if (element.child("color")) wintheme.background.color = element.child("color").text().as_int();
+		if (element.child("color")) wintheme.background.color = getHexColor(element.child("color").text().as_string());
 		if (element.child("path")) wintheme.background.path = element.child("path").text().as_string();
 	}
 
 	// Get Title theme
 	element = window.child("title");
 	if (element) {
-		if (element.child("color")) wintheme.title.color = element.child("color").text().as_int();
+		if (element.child("color")) wintheme.title.color = getHexColor(element.child("color").text().as_string());
 		if (element.child("path")) wintheme.title.path = element.child("path").text().as_string();
 		if (element.child("alignment")) wintheme.title.alignment = getAlignment(element.child("alignment").text().as_string());
 		// TODO: Alignment
@@ -105,13 +128,13 @@ bool WindowThemeData::parseFile(std::string path) {
 
 	element = window.child("footer");
 	if (element) {
-		if (element.child("color")) wintheme.footer.color = element.child("color").text().as_int();
+		if (element.child("color")) wintheme.footer.color = getHexColor(element.child("color").text().as_string());
 		if (element.child("path")) wintheme.footer.path = element.child("path").text().as_string();
 	}
 
 	element = window.child("spacer");
 	if (element) {
-		if (element.child("color")) wintheme.spacer_color = element.child("color").text().as_int();
+		if (element.child("color")) wintheme.spacer_color = getHexColor(element.child("color").text().as_string());
 	}
 
 	// push this new theme to the map
@@ -139,3 +162,4 @@ Alignment WindowThemeData::getAlignment(std::string align) {
 	if (align == "center") return ALIGN_CENTER;
 	return ALIGN_CENTER;
 }
+

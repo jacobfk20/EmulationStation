@@ -67,6 +67,8 @@ private:
 
 	std::map<std::string, WindowTheme> mThemeMap;
 
+	unsigned int getHexColor(const char* str);
+
 	WindowTheme* mCurrentTheme;
 
 	static WindowThemeData* sInstance;

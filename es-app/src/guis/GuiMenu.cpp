@@ -5,6 +5,7 @@
 #include "Sound.h"
 #include "Log.h"
 #include "Settings.h"
+#include "WindowThemeData.h"
 #include "guis/GuiMsgBox.h"
 #include "guis/GuiSettings.h"
 #include "guis/GuiScraperStart.h"
@@ -171,6 +172,31 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 
 					if(needReload)
 						ViewController::get()->reloadAll(); // TODO - replace this with some sort of signal-based implementation
+				});
+			}
+
+			// Window theme set
+			auto windowThemeNames = WindowThemeData::getInstance()->getThemeNames();
+
+			if (!windowThemeNames.empty()) {
+				auto win_theme_set = std::make_shared<OptionListComponent<std::string>>(mWindow, "WINDOW THEMES", false);
+				for (auto t = windowThemeNames.begin(); t != windowThemeNames.end(); t++) {
+					win_theme_set->add((*t), (*t), WindowThemeData::getInstance()->getCurrentTheme()->name == (*t));
+				}
+
+				s->addWithLabel("WINDOW THEME", win_theme_set);
+
+				s->addSaveFunc([win_theme_set] {
+					bool needReload = false;
+					if (Settings::getInstance()->getString("WindowTheme") != win_theme_set->getSelected())
+						needReload = true;
+
+					Settings::getInstance()->setString("WindowTheme", win_theme_set->getSelected());
+
+					WindowThemeData::getInstance()->setTheme(win_theme_set->getSelected());
+
+					//if (needReload)
+						//ViewController::get()->reloadAll();
 				});
 			}
 

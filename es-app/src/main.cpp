@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "views/ViewController.h"
 #include "SystemData.h"
+#include "WindowThemeData.h"
 #include <boost/filesystem.hpp>
 #include "guis/GuiDetectDevice.h"
 #include "guis/GuiMsgBox.h"
@@ -213,6 +214,8 @@ int main(int argc, char* argv[])
 	Window window;
 	ViewController::init(&window);
 	window.pushGui(ViewController::get());
+
+	WindowThemeData::getInstance()->setTheme(Settings::getInstance()->getString("WindowTheme"));
 
 	if(!scrape_cmdline)
 	{
