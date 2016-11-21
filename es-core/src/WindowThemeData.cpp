@@ -26,8 +26,17 @@ WindowThemeData* WindowThemeData::getInstance() {
 
 WindowThemeData::WindowThemeData() {
 	generateDefault();
-	parseFile(getHomePath() + "/.emulationstation/es-dark.xml");
-	setTheme("default");
+
+	// get all from WindowTheme folder
+	fs::path wtPath(getHomePath() + "/.emulationstation/WindowThemes");
+	fs::directory_iterator end_itr;
+	for (fs::directory_iterator itr(wtPath); itr != end_itr; ++itr) {
+		parseFile(itr->path().generic_string());
+	}
+
+	// check if selected theme exists and set it
+	if (!setTheme(Settings::getInstance()->getString("WindowTheme")))
+		setTheme("default");
 }
 
 
@@ -70,6 +79,9 @@ bool WindowThemeData::setTheme(std::string name) {
 		return false;
 
 	mCurrentTheme = &mThemeMap[name];
+
+	if (mCurrentTheme == NULL) return false;
+
 	return true;
 }
 

@@ -215,8 +215,6 @@ int main(int argc, char* argv[])
 	ViewController::init(&window);
 	window.pushGui(ViewController::get());
 
-	WindowThemeData::getInstance()->setTheme(Settings::getInstance()->getString("WindowTheme"));
-
 	if(!scrape_cmdline)
 	{
 		if(!window.init(width, height))
