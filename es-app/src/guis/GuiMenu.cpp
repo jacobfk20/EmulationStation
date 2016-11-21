@@ -39,8 +39,12 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 
 	// [version]
 
+
+	// Get window theme default text color
+	unsigned int text_color = WindowThemeData::getInstance()->getCurrentTheme()->default_text.color;
+
 	auto openScrapeNow = [this] { mWindow->pushGui(new GuiScraperStart(mWindow)); };
-	addEntry("SCRAPER", 0x777777FF, true, 
+	addEntry("SCRAPER", text_color, true, 
 		[this, openScrapeNow] { 
 			auto s = new GuiSettings(mWindow, "SCRAPER");
 
@@ -74,7 +78,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	addEntry("SOUND SETTINGS", 0x777777FF, true, 
+	addEntry("SOUND SETTINGS", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "SOUND SETTINGS");
 
@@ -93,7 +97,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	addEntry("UI SETTINGS", 0x777777FF, true,
+	addEntry("UI SETTINGS", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "UI SETTINGS");
 
@@ -195,15 +199,15 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 
 					WindowThemeData::getInstance()->setTheme(win_theme_set->getSelected());
 
-					//if (needReload)
-						//ViewController::get()->reloadAll();
+					if (needReload)
+						ViewController::get()->reloadAll();
 				});
 			}
 
 			mWindow->pushGui(s);
 	});
 
-	addEntry("OTHER SETTINGS", 0x777777FF, true,
+	addEntry("OTHER SETTINGS", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "OTHER SETTINGS");
 
@@ -221,17 +225,17 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	addEntry("CONFIGURE INPUT", 0x777777FF, true, 
+	addEntry("CONFIGURE INPUT", text_color, true,
 		[this] { 
 			mWindow->pushGui(new GuiDetectDevice(mWindow, false, nullptr));
 	});
 
-	addEntry("SYSTEM SETTINGS", 0x777777FF, true,
+	addEntry("SYSTEM SETTINGS", text_color, true,
 		[this] {
 			mWindow->pushGui(new GuiSystemSettings(mWindow));
 	});
 
-	addEntry("QUIT", 0x777777FF, true, 
+	addEntry("QUIT", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "QUIT");
 			
@@ -288,13 +292,9 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0xC6C6C6FF);
-	mVersion.setText("EMULATIONSTATION V" + strToUpper(PROGRAM_VERSION_STRING));
-	mVersion.setAlignment(ALIGN_CENTER);
+	mMenu.setFooter("EMULATIONSTATION V" + strToUpper(PROGRAM_VERSION_STRING));
 
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
 	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.3f);
@@ -313,8 +313,6 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 
 void GuiMenu::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
 }
 
 void GuiMenu::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

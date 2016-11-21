@@ -24,7 +24,7 @@
 #include "components/MenuComponent.h"
 
 
-GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(window, "STORAGE"), mVersion(window)
+GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(window, "STORAGE")
 {
 	// STORAGE INFO
 
@@ -84,7 +84,7 @@ GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(win
 	// Create rows
 	// Pbar for Total used [ This feels kinda hacky..  progressbar is not well made ]
 	pbar_total = std::make_shared<ProgressBarComponent>(mWindow, "ppp");
-	auto tell_perc = std::make_shared<TextComponent>(mWindow, s3.str() + "%", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	auto tell_perc = std::make_shared<TextComponent>(mWindow, s3.str() + "%", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 	tell_perc->setAlignment(ALIGN_RIGHT);
 	int pbSize = mMenu.getSize().x() * .8f;
 	pbar_total->setSize(pbSize, mMenu.getSize().y() * .09f);
@@ -97,8 +97,8 @@ GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(win
 
 	row.elements.clear();
 		
-	auto tell_totalsize = std::make_shared<TextComponent>(mWindow, "TOTAL DISK SIZE", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
-	auto tell_totalsize_i = std::make_shared<TextComponent>(mWindow, "" + totalSizeInGb + " GB", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	auto tell_totalsize = std::make_shared<TextComponent>(mWindow, "TOTAL DISK SIZE", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
+	auto tell_totalsize_i = std::make_shared<TextComponent>(mWindow, "" + totalSizeInGb + " GB", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 	tell_totalsize_i->setAlignment(ALIGN_RIGHT);
 	row.addElement(tell_totalsize, true);
 	row.addElement(tell_totalsize_i, true);
@@ -106,27 +106,20 @@ GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(win
 
 	row.elements.clear();
 
-	auto tell_free = std::make_shared<TextComponent>(mWindow, "TOTAL DISK FREE", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
-	auto tell_free_i = std::make_shared<TextComponent>(mWindow, "" + totalAvailableInGb + " GB", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	auto tell_free = std::make_shared<TextComponent>(mWindow, "TOTAL DISK FREE", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
+	auto tell_free_i = std::make_shared<TextComponent>(mWindow, "" + totalAvailableInGb + " GB", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 	tell_free_i->setAlignment(ALIGN_RIGHT);
 	row.addElement(tell_free, true);
 	row.addElement(tell_free_i, true);
 	mMenu.addRow(row);
 
-	addEntry("STORAGE PER SYSTEM", 0x777777FF, true, [this] {
+	addEntry("STORAGE PER SYSTEM", mMenu.getTextColor(), true, [this] {
 		mWindow->pushGui(new GuiEmulatorList(mWindow));
 	});
 
 	//getRemovableInfo();
 
-
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0xAAAAFFFF);
-	//mVersion.setText("RAW: " + strToUpper(cLine));
-	mVersion.setAlignment(ALIGN_CENTER);
-
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
 	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
@@ -134,8 +127,6 @@ GuiStorageInfo::GuiStorageInfo(Window* window) : GuiComponent(window), mMenu(win
 
 void GuiStorageInfo::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
 }
 
 void GuiStorageInfo::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

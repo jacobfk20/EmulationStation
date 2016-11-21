@@ -7,6 +7,7 @@
 #include "guis/GuiGameScraper.h"
 #include "guis/GuiMsgBox.h"
 #include <boost/filesystem.hpp>
+#include "WindowThemeData.h"
 
 #include "components/TextEditComponent.h"
 #include "components/DateTimeComponent.h"
@@ -27,14 +28,18 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 	mMetaData(md), 
 	mSavedCallback(saveCallback), mDeleteFunc(deleteFunc)
 {
+	// Get WindowThemeData for window theme
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mBackground.setColor(wTheme->background.color);
+
 	addChild(&mBackground);
 	addChild(&mGrid);
 
 	mHeaderGrid = std::make_shared<ComponentGrid>(mWindow, Vector2i(1, 5));
 	
-	mTitle = std::make_shared<TextComponent>(mWindow, "EDIT METADATA", Font::get(FONT_SIZE_LARGE), 0x555555FF, ALIGN_CENTER);
+	mTitle = std::make_shared<TextComponent>(mWindow, "EDIT METADATA", Font::get(FONT_SIZE_LARGE), wTheme->title.color, ALIGN_CENTER);
 	mSubtitle = std::make_shared<TextComponent>(mWindow, strToUpper(scraperParams.game->getPath().filename().generic_string()), 
-		Font::get(FONT_SIZE_SMALL), 0x777777FF, ALIGN_CENTER);
+		Font::get(FONT_SIZE_SMALL), wTheme->default_text.color, ALIGN_CENTER);
 	mHeaderGrid->setEntry(mTitle, Vector2i(0, 1), false, true);
 	mHeaderGrid->setEntry(mSubtitle, Vector2i(0, 3), false, true);
 

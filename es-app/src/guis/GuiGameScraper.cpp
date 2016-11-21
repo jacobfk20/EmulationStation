@@ -3,6 +3,7 @@
 #include "components/TextComponent.h"
 #include "components/ButtonComponent.h"
 #include "components/MenuComponent.h"
+#include "WindowThemeData.h"
 #include "scrapers/Scraper.h"
 #include "Renderer.h"
 #include "Log.h"
@@ -17,16 +18,20 @@ GuiGameScraper::GuiGameScraper(Window* window, ScraperSearchParams params, std::
 	addChild(&mBox);
 	addChild(&mGrid);
 
+	// Get Window Theme
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mBox.setColor(wTheme->background.color);
+
 	// row 0 is a spacer
 
 	mGameName = std::make_shared<TextComponent>(mWindow, strToUpper(mSearchParams.game->getPath().filename().generic_string()), 
-		Font::get(FONT_SIZE_MEDIUM), 0x777777FF, ALIGN_CENTER);
+		Font::get(FONT_SIZE_MEDIUM), wTheme->title.color, ALIGN_CENTER);
 	mGrid.setEntry(mGameName, Eigen::Vector2i(0, 1), false, true);
 
 	// row 2 is a spacer
 
 	mSystemName = std::make_shared<TextComponent>(mWindow, strToUpper(mSearchParams.system->getFullName()), Font::get(FONT_SIZE_SMALL), 
-		0x888888FF, ALIGN_CENTER);
+		wTheme->default_text.color, ALIGN_CENTER);
 	mGrid.setEntry(mSystemName, Eigen::Vector2i(0, 3), false, true);
 
 	// row 4 is a spacer

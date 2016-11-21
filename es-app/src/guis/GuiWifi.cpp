@@ -30,7 +30,7 @@
 #include "components/MenuComponent.h"
 #include "guis/GuiTextEditPopup.h"
 
-GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK SETTINGS"), mVersion(window)
+GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK SETTINGS")
 {
 	// MAIN WIFI MENU
 
@@ -45,7 +45,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 
 	std::string wificonnect_path = getHomePath() + "/.emulationstation/app/wifi/./wificonnect";
 
-	addEntry("CONNECT TO NEW WIFI", 0x777777FF, true, 
+	addEntry("CONNECT TO NEW WIFI", mMenu.getTextColor(), true, 
 		[this, window] { 
 
 			auto s = new GuiSettings(mWindow, "AVAILABLE NETWORKS");
@@ -202,7 +202,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			mWindow->pushGui(s);
 	});
 
-	addEntry("SHOW CURRENT WIFI INFO", 0x777777FF, true, 
+	addEntry("SHOW CURRENT WIFI INFO", mMenu.getTextColor(), true,
 		[this] {
 			// dump iwlist and ifconfig into a memory file through pipe
 			FILE *iwList;
@@ -285,7 +285,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			mWindow->pushGui(s);
 	});
 
-	addEntry("SHOW ETHERNET DETAILS", 0x777777FF, true,
+	addEntry("SHOW ETHERNET DETAILS", mMenu.getTextColor(), true,
 		[this] {
 		// dump iwlist and ifconfig into a memory file through pipe
 		FILE *wIPP;
@@ -349,7 +349,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 		mWindow->pushGui(s);
 	});
 
-	addEntry("SAVED NETWORKS", 0x777777FF, true, [this, wificonnect_path] { 
+	addEntry("SAVED NETWORKS", mMenu.getTextColor(), true, [this, wificonnect_path] {
 		// Grab network list from wpa_supplicant
 		FILE *wIPP;
 		char wip[1035];
@@ -408,7 +408,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 		mWindow->pushGui(s);
 	});
 
-	addEntry("TURN WIFI ON/OFF", 0x777777FF, true, [this] {
+	addEntry("TURN WIFI ON/OFF", mMenu.getTextColor(), true, [this] {
 		mWindow->pushGui(new GuiMsgBox(mWindow, "Turn Wifi On or Off?", "ON", 
 			[] { system("sudo ifconfig wlan0 up"); },
 			"OFF", 
@@ -418,13 +418,9 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 		));
 	});
 
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0x0044FFFF);
-	mVersion.setText("GUIWIFI V 0.51");
-	mVersion.setAlignment(ALIGN_CENTER);
+	mMenu.setFooter("GUIWIFI V 0.51");
 
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
 	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
@@ -432,8 +428,6 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 
 void GuiWifi::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
 }
 
 void GuiWifi::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

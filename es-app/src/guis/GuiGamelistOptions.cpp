@@ -26,7 +26,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 		mJumpToLetterList->add(std::string(1, c), c, c == curChar);
 
 	ComponentListRow row;
-	row.addElement(std::make_shared<TextComponent>(mWindow, "JUMP TO LETTER", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(mWindow, "JUMP TO LETTER", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor()), true);
 	row.addElement(mJumpToLetterList, false);
 	row.input_handler = [&](InputConfig* config, Input input) {
 		if(config->isMappedTo("a", input) && input.value)
@@ -54,14 +54,14 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 
 	// edit game metadata
 	row.elements.clear();
-	row.addElement(std::make_shared<TextComponent>(mWindow, "EDIT THIS GAME'S METADATA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(mWindow, "EDIT THIS GAME'S METADATA", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor()), true);
 	row.addElement(makeArrow(mWindow), false);
 	row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openMetaDataEd, this));
 	mMenu.addRow(row);
 
 	// --- SYSTEM UI SETTINGS ---
 	row.elements.clear();
-	auto settings_text = std::make_shared<TextComponent>(mWindow, "SYSTEM UI SETTINGS", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	auto settings_text = std::make_shared<TextComponent>(mWindow, "SYSTEM UI SETTINGS", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 	row.addElement(settings_text, true);
 	row.addElement(makeArrow(mWindow), false);
 	row.makeAcceptInputHandler([this, system] {

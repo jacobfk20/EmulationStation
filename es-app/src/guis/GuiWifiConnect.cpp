@@ -20,7 +20,7 @@
 #include "guis/GuiTextEditPopup.h"
 #include "guis/GuiTextEditPopupKeyboard.h"
 
-GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encrypted) : GuiComponent(window), mMenu(window, "Connect to wifi"), mVersion(window)
+GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encrypted) : GuiComponent(window), mMenu(window, "Connect to wifi")
 {
 	// CONNECT TO WIFI
 
@@ -39,7 +39,7 @@ GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encryp
 	/// ======  ENTER PASSWORD  ======
 	// if network is ecrypted:
 	if (encrypted) {
-		addEntry("ENTER PASSWORD", 0x777777FF, true, [this, wifiName, ed] {
+		addEntry("ENTER PASSWORD", mMenu.getTextColor(), true, [this, wifiName, ed] {
 			// create callback function to store password from keyboard popup
 			auto updateVal = [ed](const std::string& newVal) { ed->setValue(newVal); }; // ok callback (apply new value to ed)
 
@@ -52,7 +52,7 @@ GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encryp
 	}
 	else {
 		// When network is NOT encrpyted and OPEN:
-		addEntry("ADD PASSWORD [NETOWRK IS OPEN]", 0x777777FF, true, [this, wifiName, ed] {
+		addEntry("ADD PASSWORD [NETOWRK IS OPEN]", mMenu.getTextColor(), true, [this, wifiName, ed] {
 			// create callback function to store password from keyboard popup
 			auto updateVal = [ed](const std::string& newVal) { ed->setValue(newVal); }; // ok callback (apply new value to ed)
 
@@ -63,7 +63,7 @@ GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encryp
 
 
 	/// ===== FULL DETAILS =====
-	addEntry("GET FULL DETAILS", 0x777777FF, true, 
+	addEntry("GET FULL DETAILS", mMenu.getTextColor(), true,
 		[this, wifiName] {
 			auto s = new GuiSettings(mWindow, "FULL DETAILS");
 
@@ -124,7 +124,7 @@ GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encryp
 			mWindow->pushGui(s);
 	});
 
-	addEntry("CONNECT", 0x777777FF, true, [this, ed, wifiName, encrypted] {
+	addEntry("CONNECT", mMenu.getTextColor(), true, [this, ed, wifiName, encrypted] {
 		// make sure the password is at least 8 characters long
 		if (ed->getValue().length() < 8 && encrypted) {
 			mWindow->pushGui(new GuiMsgBox(mWindow, "Password is not long enough!  Must be at least 8 characters long.", "Ok", nullptr));
@@ -159,14 +159,9 @@ GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encryp
 			"Cancel", nullptr));
 	});
 
-
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0x0044FFFF);
-	mVersion.setText("GUIWIFI");
-	mVersion.setAlignment(ALIGN_CENTER);
+	mMenu.setFooter("GUIWIFI");
 
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
 	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
@@ -174,8 +169,6 @@ GuiWifiConnect::GuiWifiConnect(Window* window, std::string wifiName, bool encryp
 
 void GuiWifiConnect::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
 }
 
 void GuiWifiConnect::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

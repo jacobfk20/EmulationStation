@@ -135,13 +135,14 @@ bool WindowThemeData::parseFile(std::string path) {
 		if (element.child("color")) wintheme.title.color = getHexColor(element.child("color").text().as_string());
 		if (element.child("path")) wintheme.title.path = element.child("path").text().as_string();
 		if (element.child("alignment")) wintheme.title.alignment = getAlignment(element.child("alignment").text().as_string());
-		// TODO: Alignment
 	}
 
 	element = window.child("footer");
 	if (element) {
 		if (element.child("color")) wintheme.footer.color = getHexColor(element.child("color").text().as_string());
 		if (element.child("path")) wintheme.footer.path = element.child("path").text().as_string();
+		if (element.child("alignment")) wintheme.footer.alignment = getAlignment(element.child("alignment").text().as_string());
+		else wintheme.footer.alignment = ALIGN_CENTER;
 	}
 
 	element = window.child("spacer");
@@ -159,6 +160,7 @@ void WindowThemeData::generateDefault() {
 	dtheme.background.color = 0x444444FF;
 	dtheme.default_text.color = 0x777777FF;
 	dtheme.footer.color = 0xAAAAAAFF;
+	dtheme.footer.alignment = ALIGN_CENTER;
 	dtheme.spacer_color = 0xC6C7C6FF;
 	dtheme.title.color = 0x999999FF;
 	dtheme.title.alignment = ALIGN_CENTER;

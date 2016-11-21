@@ -30,7 +30,7 @@
 #include "scrapers/TheArchiveScraper.h"
 #include "guis/GuiTextEditPopup.h"
 
-GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMenu(window, "SYSTEM SETTINGS"), mVersion(window)
+GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMenu(window, "SYSTEM SETTINGS")
 {
 	// SYSTEM SETTINGS
 
@@ -40,7 +40,7 @@ GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMe
 
 	// [version]
 
-	addEntry("SYSTEM UPDATE", 0x777777FF, true, [this, window] { 
+	addEntry("SYSTEM UPDATE", mMenu.getTextColor(), true, [this, window] { 
 
 			auto s = new GuiSettings(mWindow, "SYSTEM UPDATE");
 
@@ -60,23 +60,18 @@ GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMe
 	});
 
 	/// Change network settings
-	addEntry("NETWORK SETTINGS", 0x777777FF, true, [this, window] {
+	addEntry("NETWORK SETTINGS", mMenu.getTextColor(), true, [this, window] {
 		mWindow->pushGui(new GuiWifi(mWindow));
 	});
 
 	/// See storage on internal memory card.
-	addEntry("STORAGE", 0x777777FF, true, [this] {
+	addEntry("STORAGE", mMenu.getTextColor(), true, [this] {
 		mWindow->pushGui(new GuiStorageInfo(mWindow));
 	});
 
-
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0xAAAAFFFF);
-	mVersion.setText("BUILD " + strToUpper(PROGRAM_BUILT_STRING));
-	mVersion.setAlignment(ALIGN_CENTER);
+	mMenu.setFooter("BUILD DATE: " + strToUpper(PROGRAM_BUILT_STRING));
 
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
 	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
@@ -84,8 +79,7 @@ GuiSystemSettings::GuiSystemSettings(Window* window) : GuiComponent(window), mMe
 
 void GuiSystemSettings::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
+
 }
 
 void GuiSystemSettings::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

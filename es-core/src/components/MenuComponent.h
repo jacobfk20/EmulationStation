@@ -37,11 +37,15 @@ public:
 	void addButton(const std::string& label, const std::string& helpText, const std::function<void()>& callback);
 
 	void setTitle(const char* title, const std::shared_ptr<Font>& font);
+	void setFooter(const std::string& footer, const std::shared_ptr<Font>& font = Font::get(FONT_SIZE_SMALL));
 
 	inline void setCursorToList() { mGrid.setCursorTo(mList); }
 	inline void setCursorToButtons() { assert(mButtonGrid); mGrid.setCursorTo(mButtonGrid); }
 
 	virtual std::vector<HelpPrompt> getHelpPrompts() override;
+
+	// Returns the default text color from Window Theme.
+	unsigned int getTextColor() { return mTextColor; };
 
 private:
 	void updateSize();
@@ -51,7 +55,10 @@ private:
 	NinePatchComponent mBackground;
 	ComponentGrid mGrid;
 
+	unsigned int mTextColor = 0x777777FF;
+
 	std::shared_ptr<TextComponent> mTitle;
+	std::shared_ptr<TextComponent> mFooter;
 	std::shared_ptr<ComponentList> mList;
 	std::shared_ptr<ComponentGrid> mButtonGrid;
 	std::vector< std::shared_ptr<ButtonComponent> > mButtons;
