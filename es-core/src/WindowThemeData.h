@@ -26,8 +26,10 @@ class Window;
 
 
 struct WindowThemeElement {
+	unsigned int color_focused;
 	unsigned int color;
 	std::string path;
+	std::string path_focused;
 	Alignment alignment;
 };
 
@@ -37,6 +39,7 @@ struct WindowTheme {
 	WindowThemeElement title;
 	WindowThemeElement footer;
 	WindowThemeElement default_text;
+	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER };
 	unsigned int spacer_color;
 };
 

@@ -1,4 +1,5 @@
 #include "components/ButtonComponent.h"
+#include "WindowThemeData.h"
 #include "Renderer.h"
 #include "Window.h"
 #include "Util.h"
@@ -14,6 +15,10 @@ ButtonComponent::ButtonComponent(Window* window, const std::string& text, const 
 	setPressedFunc(func);
 	setText(text, helpText);
 	updateImage();
+
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mTextColorFocused = wTheme->button.color_focused;
+	mTextColorUnfocused = wTheme->button.color;
 }
 
 void ButtonComponent::onSizeChanged()
@@ -71,9 +76,16 @@ void ButtonComponent::setEnabled(bool enabled)
 
 void ButtonComponent::updateImage()
 {
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	std::string btnFilled = wTheme->button.path_focused;
+	std::string btn = wTheme->button.path;
+
+	if (btnFilled == "") btnFilled = ":/button_filled.png";
+	if (btn == "") btn = ":/button.png";
+
 	if(!mEnabled || !mPressedFunc)
 	{
-		mBox.setImagePath(":/button_filled.png");
+		mBox.setImagePath(btnFilled);
 		mBox.setCenterColor(0x770000FF);
 		mBox.setEdgeColor(0x770000FF);
 		return;
@@ -81,7 +93,7 @@ void ButtonComponent::updateImage()
 
 	mBox.setCenterColor(0xFFFFFFFF);
 	mBox.setEdgeColor(0xFFFFFFFF);
-	mBox.setImagePath(mFocused ? ":/button_filled.png" : ":/button.png");
+	mBox.setImagePath(mFocused ? btnFilled : btn);
 }
 
 void ButtonComponent::render(const Eigen::Affine3f& parentTrans)

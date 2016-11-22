@@ -145,9 +145,19 @@ bool WindowThemeData::parseFile(std::string path) {
 		else wintheme.footer.alignment = ALIGN_CENTER;
 	}
 
+	// Spacer (the line between list items)
 	element = window.child("spacer");
 	if (element) {
 		if (element.child("color")) wintheme.spacer_color = getHexColor(element.child("color").text().as_string());
+	}
+
+	// Button
+	element = window.child("button");
+	if (element) {
+		if (element.child("color")) wintheme.button.color = getHexColor(element.child("color").text().as_string());
+		if (element.child("color_focused")) wintheme.button.color_focused = getHexColor(element.child("color_focused").text().as_string());
+		if (element.child("path")) wintheme.button.path = element.child("path").text().as_string();
+		if (element.child("path_focused")) wintheme.button.path_focused = element.child("path_focused").text().as_string();
 	}
 
 	// push this new theme to the map
