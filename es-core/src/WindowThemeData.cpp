@@ -135,6 +135,7 @@ bool WindowThemeData::parseFile(std::string path) {
 	if (element)
 		if (element.child("path")) wintheme.arrow = element.child("path").text().as_string();
 
+
 	// ----------------- NORMAL THEME ITEMS ----------------
 	// Background
 	element = window.child("background");
@@ -157,6 +158,11 @@ bool WindowThemeData::parseFile(std::string path) {
 	// get default text color in case theme doesn't apply one
 	wintheme.option_list.color = wintheme.default_text.color;
 	if (element) getElementData(element, &wintheme.option_list);
+
+	// Switch Component
+	element = window.child("switch");
+	if (element) getElementData(element, &wintheme.Switch);
+
 
 	// push this new theme to the map
 	mThemeMap[wintheme.name] = wintheme;
@@ -193,6 +199,7 @@ void WindowThemeData::getElementData(pugi::xml_node node, WindowThemeElement* th
 	if (node.child("color_focused")) themeElement->color_focused = getHexColor(node.child("color_focused").text().as_string());
 	if (node.child("path")) themeElement->path = node.child("path").text().as_string();
 	if (node.child("path_focused")) themeElement->path_focused = node.child("path_focused").text().as_string();
+	if (node.child("path_selected")) themeElement->path_selected = node.child("path_selected").text().as_string();
 	if (node.child("alignment")) themeElement->alignment = getAlignment(node.child("alignment").text().as_string());
 	else themeElement->alignment = ALIGN_CENTER;
 }

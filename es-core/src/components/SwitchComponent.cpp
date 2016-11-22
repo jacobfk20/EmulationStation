@@ -1,11 +1,14 @@
 #include "SwitchComponent.h"
+#include "WindowThemeData.h"
 #include "Renderer.h"
 #include "resources/Font.h"
 #include "Window.h"
 
 SwitchComponent::SwitchComponent(Window* window, bool state) : GuiComponent(window), mImage(window), mState(state)
 {
-	mImage.setImage(":/off.svg");
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mImage.setImage(wTheme->Switch.path);
+	mImage.setColorShift(wTheme->Switch.color);
 	mImage.setResize(0, Font::get(FONT_SIZE_MEDIUM)->getLetterHeight());
 	mSize = mImage.getSize();
 }
@@ -49,7 +52,8 @@ void SwitchComponent::setState(bool state)
 
 void SwitchComponent::onStateChanged()
 {
-	mImage.setImage(mState ? ":/on.svg" : ":/off.svg");
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mImage.setImage(mState ? wTheme->Switch.path_selected : wTheme->Switch.path);
 }
 
 std::vector<HelpPrompt> SwitchComponent::getHelpPrompts()

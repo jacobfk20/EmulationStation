@@ -31,6 +31,7 @@ struct WindowThemeElement {
 	std::string path;
 	std::string path_focused;
 	Alignment alignment;
+	std::string path_selected;		// Mostly for switch component "on"
 };
 
 struct WindowTheme {
@@ -39,8 +40,9 @@ struct WindowTheme {
 	WindowThemeElement title;
 	WindowThemeElement footer;
 	WindowThemeElement default_text;
-	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER };
-	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER };
+	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER, "" };
+	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER, "" };
+	WindowThemeElement Switch{ 0xFFFFFFFF, 0xFFFFFFFF, ":/off.svg", "", ALIGN_CENTER, ":/on.svg" };
 	unsigned int spacer_color;
 	std::string arrow = ":/arrow.svg";
 };
