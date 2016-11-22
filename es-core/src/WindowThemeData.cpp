@@ -163,6 +163,9 @@ bool WindowThemeData::parseFile(std::string path) {
 	element = window.child("switch");
 	if (element) getElementData(element, &wintheme.Switch);
 
+	// Slider Component
+	element = window.child("slider");
+	if (element) getElementData(element, &wintheme.slider);
 
 	// push this new theme to the map
 	mThemeMap[wintheme.name] = wintheme;
