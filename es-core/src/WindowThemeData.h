@@ -40,7 +40,9 @@ struct WindowTheme {
 	WindowThemeElement footer;
 	WindowThemeElement default_text;
 	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER };
+	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER };
 	unsigned int spacer_color;
+	std::string arrow = ":/arrow.svg";
 };
 
 
@@ -71,6 +73,7 @@ private:
 	std::map<std::string, WindowTheme> mThemeMap;
 
 	unsigned int getHexColor(const char* str);
+	void getElementData(pugi::xml_node node, WindowThemeElement* themeElement);
 
 	WindowTheme* mCurrentTheme;
 

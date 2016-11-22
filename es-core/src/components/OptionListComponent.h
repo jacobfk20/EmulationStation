@@ -4,6 +4,7 @@
 #include "resources/Font.h"
 #include "Renderer.h"
 #include "Window.h"
+#include "WindowThemeData.h"
 #include "components/TextComponent.h"
 #include "components/ImageComponent.h"
 #include "components/MenuComponent.h"
@@ -52,7 +53,7 @@ private:
 			for(auto it = mParent->mEntries.begin(); it != mParent->mEntries.end(); it++)
 			{
 				row.elements.clear();
-				row.addElement(std::make_shared<TextComponent>(mWindow, strToUpper(it->name), font, 0x777777FF), true);
+				row.addElement(std::make_shared<TextComponent>(mWindow, strToUpper(it->name), font, mMenu.getTextColor()), true);
 
 				OptionListData& e = *it;
 
@@ -142,21 +143,22 @@ public:
 		 mText(window), mLeftArrow(window), mRightArrow(window)
 	{
 		auto font = Font::get(FONT_SIZE_MEDIUM, FONT_PATH_LIGHT);
+		auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
 		mText.setFont(font);
-		mText.setColor(0x777777FF);
+		mText.setColor(wTheme->option_list.color);
 		mText.setAlignment(ALIGN_CENTER);
 		addChild(&mText);
 
 		if(mMultiSelect)
 		{
-			mRightArrow.setImage(":/arrow.svg");
+			mRightArrow.setImage(wTheme->arrow);
 			addChild(&mRightArrow);
 		}else{
-			mLeftArrow.setImage(":/option_arrow.svg");
+			mLeftArrow.setImage(wTheme->option_list.path);
 			mLeftArrow.setFlipX(true);
 			addChild(&mLeftArrow);
 
-			mRightArrow.setImage(":/option_arrow.svg");
+			mRightArrow.setImage(wTheme->option_list.path);
 			addChild(&mRightArrow);
 		}
 
