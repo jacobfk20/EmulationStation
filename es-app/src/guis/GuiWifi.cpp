@@ -142,7 +142,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			ComponentListRow row;
 
 			// For loop all networks out
-			int color = 0x777777FF;
+			int color = mMenu.getTextColor();
 			//for (int i = ssidIndex - 1; i > -1; i--) {
 			for (int i = 0; i < ssidIndex; i++){
 
@@ -192,7 +192,7 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			// If no networks could be found, let the user know
 			if (ssidIndex < 1) {
 				row.elements.clear();
-				auto no_network = std::make_shared<TextComponent>(mWindow, "NO NETWORKS COULD BE FOUND.", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+				auto no_network = std::make_shared<TextComponent>(mWindow, "NO NETWORKS COULD BE FOUND.", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 				no_network->setAlignment(ALIGN_CENTER);
 				row.addElement(no_network, true);
 				s->addRow(row);
@@ -270,16 +270,16 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			auto s = new GuiSettings(mWindow, "CURRENT WIFI NETWORK");
 
 			// ESSID
-			auto show_ssid = std::make_shared<TextComponent>(mWindow, "" + wSSID, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+			auto show_ssid = std::make_shared<TextComponent>(mWindow, "" + wSSID, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 			s->addWithLabel("Network Name", show_ssid);
 
-			auto show_ip = std::make_shared<TextComponent>(mWindow, "" + wIP, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+			auto show_ip = std::make_shared<TextComponent>(mWindow, "" + wIP, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 			s->addWithLabel("IPv4", show_ip);
 
-			auto show_channel = std::make_shared<TextComponent>(mWindow, "" + wChannel, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+			auto show_channel = std::make_shared<TextComponent>(mWindow, "" + wChannel, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 			s->addWithLabel("Channel", show_channel);
 
-			auto show_quality = std::make_shared<TextComponent>(mWindow, "" + wQuality, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+			auto show_quality = std::make_shared<TextComponent>(mWindow, "" + wQuality, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 			s->addWithLabel("Signal", show_quality);
 
 			mWindow->pushGui(s);
@@ -336,13 +336,13 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 		auto s = new GuiSettings(mWindow, "CURRENT NETWORK INFO");
 
 		// Build window rows
-		auto show_ip = std::make_shared<TextComponent>(mWindow, "" + wIP, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+		auto show_ip = std::make_shared<TextComponent>(mWindow, "" + wIP, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 		s->addWithLabel("IPv4", show_ip);
 
-		auto show_mac = std::make_shared<TextComponent>(mWindow, "" + wMac, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+		auto show_mac = std::make_shared<TextComponent>(mWindow, "" + wMac, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 		s->addWithLabel("MAC", show_mac);
 
-		auto show_data = std::make_shared<TextComponent>(mWindow, "" + wRX + "\n     " + wTX + ")", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+		auto show_data = std::make_shared<TextComponent>(mWindow, "" + wRX + "\n     " + wTX + ")", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 		show_data->setAlignment(ALIGN_CENTER);
 		s->addWithLabel("DATA", show_data);
 
@@ -375,8 +375,8 @@ GuiWifi::GuiWifi(Window* window) : GuiComponent(window), mMenu(window, "NETWORK 
 			currentLine = wip;
 			currentLine = currentLine.substr(0, currentLine.length() - 1);
 
-			row.addElement(std::make_shared<TextComponent>(mWindow, "Network: ", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-			row.addElement(std::make_shared<TextComponent>(mWindow, "" + currentLine, Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(mWindow, "Network: ", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor()), true);
+			row.addElement(std::make_shared<TextComponent>(mWindow, "" + currentLine, Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor()), true);
 
 			row.makeAcceptInputHandler([this, currentLine, wificonnect_path, s] {
 				mWindow->pushGui(new GuiMsgBox(mWindow, "DO YOU WISH TO DELETE THIS NETWORK FROM THIS DEVICE?", "YES", [this, currentLine, wificonnect_path, s] {

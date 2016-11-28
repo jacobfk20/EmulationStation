@@ -60,7 +60,7 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 		// create ed and add it (and any related components) to mMenu
 		// ed's value will be set below
 		ComponentListRow row;
-		auto lbl = std::make_shared<TextComponent>(mWindow, strToUpper(iter->displayName), Font::get(FONT_SIZE_SMALL), 0x777777FF);
+		auto lbl = std::make_shared<TextComponent>(mWindow, strToUpper(iter->displayName), Font::get(FONT_SIZE_SMALL), wTheme->default_text.color);
 		row.addElement(lbl, true); // label
 
 		switch(iter->type)
@@ -105,7 +105,7 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 		default:
 			{
 				// MD_STRING
-				ed = std::make_shared<TextComponent>(window, "", Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT), 0x777777FF, ALIGN_RIGHT);
+				ed = std::make_shared<TextComponent>(window, "", Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT), wTheme->default_text.color, ALIGN_RIGHT);
 				row.addElement(ed, true);
 				
 				auto spacer = std::make_shared<GuiComponent>(mWindow);
@@ -113,7 +113,7 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 				row.addElement(spacer, false);
 
 				auto bracket = std::make_shared<ImageComponent>(mWindow);
-				bracket->setImage(":/arrow.svg");
+				bracket->setImage(wTheme->arrow);
 				bracket->setResize(Eigen::Vector2f(0, lbl->getFont()->getLetterHeight()));
 				row.addElement(bracket, false);
 

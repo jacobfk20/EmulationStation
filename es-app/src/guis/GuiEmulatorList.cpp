@@ -48,7 +48,7 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 
 	for (int i = 0; i < vSystem.size(); i++){
 		SystemData* sys = vSystem[i];
-		addEntry(sys->getName().c_str(), 0x777777FF, true, [this, sys] {
+		addEntry(sys->getName().c_str(), mMenu.getTextColor(), true, [this, sys] {
 
 			auto s = new GuiSettings(mWindow, sys->getFullName().c_str());
 
@@ -74,6 +74,7 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 
 			/// Create item for storing emulating system's rom size
 			auto system_size = std::make_shared<TextComponent>(mWindow);
+			system_size->setColor(mMenu.getTextColor());
 			const fs::path& fpath = sys->getStartPath();
 			double rSize = 0;
 			int romCount = 0;
@@ -132,6 +133,7 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 			std::stringstream ss;
 			ss << saveCount;
 			auto system_savecount = std::make_shared<TextComponent>(mWindow);
+			system_savecount->setColor(mMenu.getTextColor());
 			system_savecount->setValue(ss.str());
 			s->addWithLabel("SAVEGAME FILES", system_savecount);
 
@@ -143,16 +145,11 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 		installedSystems = i + 1;
 	}
 
-
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0xAAAAFFFF);
 	std::stringstream mVerText;
 	mVerText << "SYSTEMS REPORTED: " << installedSystems;
-	mVersion.setText(mVerText.str());
-	mVersion.setAlignment(ALIGN_CENTER);
+	mMenu.setFooter(mVerText.str());
 
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
 	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
@@ -160,8 +157,6 @@ GuiEmulatorList::GuiEmulatorList(Window* window) : GuiComponent(window), mMenu(w
 
 void GuiEmulatorList::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
 }
 
 void GuiEmulatorList::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

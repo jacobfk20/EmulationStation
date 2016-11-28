@@ -130,6 +130,9 @@ bool WindowThemeData::parseFile(std::string path) {
 		if (element.child("color")) wintheme.spacer_color = getHexColor(element.child("color").text().as_string());
 	}
 
+	element = window.child("highlight");
+	if (element.child("color")) wintheme.highlight_color = getHexColor(element.child("color").text().as_string());
+
 	// Arrow
 	element = window.child("arrow");
 	if (element)

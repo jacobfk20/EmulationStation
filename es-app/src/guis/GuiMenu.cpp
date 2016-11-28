@@ -45,7 +45,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 
 	auto openScrapeNow = [this] { mWindow->pushGui(new GuiScraperStart(mWindow)); };
 	addEntry("SCRAPER", text_color, true, 
-		[this, openScrapeNow] { 
+		[this, openScrapeNow, text_color] { 
 			auto s = new GuiSettings(mWindow, "SCRAPER");
 
 			// scrape from
@@ -69,7 +69,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			openAndSave = [s, openAndSave] { s->save(); openAndSave(); };
 			row.makeAcceptInputHandler(openAndSave);
 
-			auto scrape_now = std::make_shared<TextComponent>(mWindow, "SCRAPE NOW", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+			auto scrape_now = std::make_shared<TextComponent>(mWindow, "SCRAPE NOW", Font::get(FONT_SIZE_MEDIUM), text_color);
 			auto bracket = makeArrow(mWindow);
 			row.addElement(scrape_now, true);
 			row.addElement(bracket, false);
