@@ -73,6 +73,7 @@ private:
 	bool parseFile(std::string path);
 	void generateDefault();
 	Alignment getAlignment(std::string align);
+	void generateFiles();
 
 	std::map<std::string, WindowTheme> mThemeMap;
 

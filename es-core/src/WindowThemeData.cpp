@@ -7,6 +7,7 @@
 #include "Settings.h"
 #include "pugixml/pugixml.hpp"
 #include <boost/assign.hpp>
+#include <fstream>
 
 #include "components/ImageComponent.h"
 #include "components/TextComponent.h"
@@ -25,7 +26,7 @@ WindowThemeData* WindowThemeData::getInstance() {
 
 
 WindowThemeData::WindowThemeData() {
-	generateDefault();
+	generateFiles();
 
 	// get all from WindowTheme folder
 	fs::path wtPath(getHomePath() + "/.emulationstation/WindowThemes");
@@ -35,8 +36,13 @@ WindowThemeData::WindowThemeData() {
 	}
 
 	// check if selected theme exists and set it
-	if (!setTheme(Settings::getInstance()->getString("WindowTheme")))
-		setTheme("default");
+	if (Settings::getInstance()->getString("WindowTheme") == "") {
+		setTheme("ES-Light");
+		Settings::getInstance()->setString("Windowtheme", "ES-Light");
+	}
+	else
+		setTheme(Settings::getInstance()->getString("WindowTheme"));
+
 }
 
 
@@ -60,6 +66,84 @@ unsigned int WindowThemeData::getHexColor(const char* str)
 		val = (val << 8) | 0xFF;
 
 	return val;
+}
+
+
+void WindowThemeData::generateFiles() {
+	// make sure path exists or create it
+	if (!fs::exists(getHomePath() + "/.emulationstation/WindowThemes"))
+		fs::create_directory(getHomePath() + "/.emulationstation/WindowThemes");
+
+	// create light and dark themes if they do not exist
+	if (!fs::exists(getHomePath() + "/.emulationstation/WindowThemes/es-light.xml")) {
+		// Create light theme
+		std::fstream file(getHomePath() + "/.emulationstation/WindowThemes/es-light.xml", std::fstream::out);
+		file << "<WindowTheme name=\"ES-Light\">\n";
+		file << "    <text-default>\n";
+		file << "        <color>777777FF</color>\n";
+		file << "        <font></font>\n";
+		file << "    </text-default>\n";
+		file << "    <window>\n";
+		file << "        <background>\n";
+		file << "            <color>FFFFFFFF</color>\n";
+		file << "            <path></path>\n";
+		file << "        </background>\n";
+		file << "        <title>\n";
+		file << "            <color>888888FF</color>\n";
+		file << "            <alignment>center</alignment>\n";
+		file << "            <font></font>\n";
+		file << "        </title>\n";
+		file << "        <footer>\n";
+		file << "            <color>999999FF</color>\n";
+		file << "            <alignment>center</alignment>\n";
+		file << "            <font></font>\n";
+		file << "        </footer>\n";
+		file << "        <spacer>\n";
+		file << "            <color>AAAACCFF</color>\n";
+		file << "        </spacer>\n";
+		file << "    </window>\n";
+		file << "</WindowTheme>\n";
+		file.close();
+	}
+
+	// Create dark theme if none exist
+	if (!fs::exists(getHomePath() + "/.emulationstation/WindowThemes/es-dark.xml")) {
+		// Create light theme
+		std::fstream file(getHomePath() + "/.emulationstation/WindowThemes/es-dark.xml", std::fstream::out);
+		file << "<WindowTheme name=\"ES-Dark\">\n";
+		file << "    <text-default>\n";
+		file << "        <color>AAAAAAFF</color>\n";
+		file << "        <font></font>\n";
+		file << "    </text-default>\n";
+		file << "    <window>\n";
+		file << "        <highlight>\n";
+		file << "            <color>00000000</color>\n";
+		file << "        </highlight>\n";
+		file << "        <background>\n";
+		file << "            <color>555555FF</color>\n";
+		file << "            <path></path>\n";
+		file << "        </background>\n";
+		file << "        <title>\n";
+		file << "            <color>CCCCCCFF</color>\n";
+		file << "            <alignment>center</alignment>\n";
+		file << "            <font></font>\n";
+		file << "        </title>\n";
+		file << "        <footer>\n";
+		file << "            <color>AAAAFFFF</color>\n";
+		file << "            <alignment>center</alignment>\n";
+		file << "            <font></font>\n";
+		file << "        </footer>\n";
+		file << "        <spacer>\n";
+		file << "            <color>AAAACCFF</color>\n";
+		file << "        </spacer>\n";
+		file << "        <button>\n";
+		file << "            <color>AAAAFFFF</color>\n";
+		file << "            <color_focused>AAAAFFFF</color_focused>\n";
+		file << "        </button>\n";
+		file << "    </window>\n";
+		file << "</WindowTheme>\n";
+		file.close();
+	}
 }
 
 
@@ -177,7 +261,7 @@ bool WindowThemeData::parseFile(std::string path) {
 
 void WindowThemeData::generateDefault() {
 	WindowTheme dtheme;
-	dtheme.background.color = 0x444444FF;
+	dtheme.background.color = 0xFFFFFFFF;
 	dtheme.default_text.color = 0x777777FF;
 	dtheme.footer.color = 0xAAAAAAFF;
 	dtheme.footer.alignment = ALIGN_CENTER;
