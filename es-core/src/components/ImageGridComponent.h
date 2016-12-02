@@ -269,6 +269,8 @@ void ImageGridComponent<T>::unloadTextures(bool unloadAll) {
 		mLoadedTextureList.clear();
 	}
 
+	if (unloadAll) mTiles.clear();
+
 	bLoading = true;		// Reload images now.
 	bUnloaded = false;
 }
