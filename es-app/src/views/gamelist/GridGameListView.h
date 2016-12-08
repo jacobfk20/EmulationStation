@@ -59,6 +59,7 @@ private:
 	void initMDLabels();
 	void initMDValues();
 
+	bool bDefaultTheme = false;
 	bool bFocused = false;
 
 	ScrollableContainer mDescContainer;

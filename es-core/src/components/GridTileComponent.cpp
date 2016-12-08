@@ -140,14 +140,29 @@ void GridTileComponent::setTheme(const std::shared_ptr<ThemeData>& theme) {
 
 	// Set animation settings to default if that theme element isn't defined.
 	mAnimation.unselected.backgroundSize = mSize;
-	mAnimation.current.backgroundSize = mSize;
 	mAnimation.unselected.size = getSize();
 	mAnimation.unselected.pos.x() = getPosition().x();
 	mAnimation.unselected.pos.y() = getPosition().y();
+	mAnimation.selected.size = getSize();
 	mAnimation.current.size = mAnimation.unselected.size;
 	mAnimation.current.pos = mAnimation.unselected.pos;
-	mAnimation.current.opacity = 0xAA;
-	mAnimation.unselected.opacity = 0xAA;
+	mAnimation.unselected.backgroundColor = 0xAAAAEEFF;
+	mAnimation.selected.backgroundColor = 0xFFFFFFFF;
+	mAnimation.current.backgroundColor = 0xAAAAEEFF;
+	mAnimation.current.backgroundSize = mSize;
+	mAnimation.unselected.textColor = 0x444444FF;
+	mAnimation.selected.textColor = 0x777777FF;
+	mAnimation.current.textColor = 0x444444FF;
+	mAnimation.animateTextColor = true;
+	mAnimation.animateBackgroundColor = true;
+	//mAnimation.animateColor = false;
+	//mAnimation.animateOpacity = false;
+	//mAnimation.animateSize = false;
+	mAnimation.animateSizeFromDefault = false;
+
+	mBackground.setEdgeColor(mAnimation.unselected.backgroundColor);
+	mBackground.setCenterColor(mAnimation.unselected.backgroundColor);
+	mText->setColor(mAnimation.current.textColor);
 
 	// Apply themedata to normal objects
 	//mBackground.applyTheme(theme, "grid", "gridtile_background", ALL);
