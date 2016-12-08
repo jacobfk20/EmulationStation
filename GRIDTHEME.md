@@ -56,14 +56,14 @@ Here is a quick list of all Added theme options GridView has and that do somethi
 </image>
 
 // Gridtile's background
-<ninepatch name="gridtile_background">
+<image name="gridtile_background">
 	<path> (changes gridtile's background)
 	<color> (RGBA)
 	<padding>
-</ninepatch>
-<ninepatch name="gridtile_background_selected">
+</imageh>
+<image name="gridtile_background_selected">
 	<color> (RGBA)
-</ninepatch>
+</image>
 
 // GameTitle in gridtile and row containers
 <text name="gridtile_text">
