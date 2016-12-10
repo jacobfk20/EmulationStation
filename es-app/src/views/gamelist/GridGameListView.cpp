@@ -35,7 +35,7 @@ GridGameListView::GridGameListView(Window* window, SystemData* system) : ISimple
 	mTitle.setAlignment(ALIGN_CENTER);
 	addChild(&mTitle);
 
-	mGrid.setPosition(12, mSize.y() * 0.15f);
+	mGrid.setPosition(24, mSize.y() * 0.15f);
 	mGrid.setSize(mSize.x() * 0.8f, mSize.y() * 0.8f);
 	addChild(&mGrid);
 	
@@ -223,7 +223,7 @@ void GridGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 	// If the selected theme contains no grid view elements, create a default theme.
 	if (bDefaultTheme) {
 		mBackground.applyTheme(theme, "basic", "background", ALL);
-		mGrid.setSize(Renderer::getScreenWidth() * .98f, Renderer::getScreenHeight() * .72f);
+		mGrid.setSize(Renderer::getScreenWidth() * .975f, Renderer::getScreenHeight() * .72f);
 
 		mHeaderText.setOpacity(0);
 		
