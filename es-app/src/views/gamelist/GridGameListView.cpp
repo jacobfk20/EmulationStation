@@ -217,9 +217,10 @@ void GridGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 
 	mGrid.applyThemeToChildren(theme);
 
-	if (!theme->getElement("grid", "md_grid", "image")) bDefaultTheme = true;
+	if (!theme->getElement("grid", "md_grid", "text")) bDefaultTheme = true;
 	else bDefaultTheme = false;
 
+	// If the selected theme contains no grid view elements, create a default theme.
 	if (bDefaultTheme) {
 		mBackground.applyTheme(theme, "basic", "background", ALL);
 		mGrid.setSize(Renderer::getScreenWidth() * .98f, Renderer::getScreenHeight() * .72f);
