@@ -35,7 +35,7 @@ GridGameListView::GridGameListView(Window* window, SystemData* system) : ISimple
 	mTitle.setAlignment(ALIGN_CENTER);
 	addChild(&mTitle);
 
-	mGrid.setPosition(12, mSize.y() * 0.15f);
+	mGrid.setPosition(24, mSize.y() * 0.15f);
 	mGrid.setSize(mSize.x() * 0.8f, mSize.y() * 0.8f);
 	addChild(&mGrid);
 	
@@ -217,6 +217,40 @@ void GridGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 
 	mGrid.applyThemeToChildren(theme);
 
+	if (!theme->getElement("grid", "md_grid", "text")) bDefaultTheme = true;
+	else bDefaultTheme = false;
+
+	// If the selected theme contains no grid view elements, create a default theme.
+	if (bDefaultTheme) {
+		mBackground.applyTheme(theme, "basic", "background", ALL);
+		mGrid.setSize(Renderer::getScreenWidth() * .975f, Renderer::getScreenHeight() * .72f);
+
+		mHeaderText.setOpacity(0);
+		
+		// fade out all metadata labels.
+		mDescContainer.setOpacity(0);
+		mLblRating.setOpacity(0);
+		mLblReleaseDate.setOpacity(0);
+		mLblDeveloper.setOpacity(0);
+		mLblPublisher.setOpacity(0);
+		mLblGenre.setOpacity(0);
+		mLblPlayers.setOpacity(0);
+		mLblLastPlayed.setOpacity(0);
+		mLblPlayCount.setOpacity(0);
+		mRating.setOpacity(0);
+		mReleaseDate.setOpacity(0);
+		mDeveloper.setOpacity(0);
+		mPublisher.setOpacity(0);
+		mGenre.setOpacity(0);
+		mPlayers.setOpacity(0);
+		mLastPlayed.setOpacity(0);
+		mPlayCount.setOpacity(0);
+
+		// set margin
+		mGrid.setMargin(Eigen::Vector2f(Renderer::getScreenWidth() * .02f, Renderer::getScreenHeight() * .05f));
+		return;
+	}
+
 	// ---  DETAILED METADATA THEME ---
 	mImage.applyTheme(theme, getName(), "md_image", POSITION | ThemeFlags::SIZE);
 
@@ -255,6 +289,8 @@ void GridGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 
 void GridGameListView::updateInfoPanel()
 {
+	if (bDefaultTheme) return;
+
 	FileData* file = (mGrid.size() == 0 || mGrid.isScrolling()) ? NULL : mGrid.getSelectedObject();
 
 	bool fadingOut;

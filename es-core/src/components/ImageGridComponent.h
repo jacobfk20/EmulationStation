@@ -65,6 +65,7 @@ public:
 	void onSizeChanged() override;
 	
 	void setModSize(float mod);
+	void setMargin(Eigen::Vector2f marg) { mMargin = marg; }
 
 	void clear(bool clearall = false) override;
 
@@ -134,7 +135,6 @@ private:
 
 	Eigen::Vector2f getPadding() const { return Eigen::Vector2f(24, 24); }
 	Eigen::Vector2f getMargin() { return mMargin; }
-	void setMargin(Eigen::Vector2f marg) { mMargin = marg; }
 	
 	void buildImages();
 	void updateImages();

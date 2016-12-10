@@ -7,6 +7,8 @@
 class TextComponent;
 class ImageComponent;
 
+const Eigen::Vector2f NULLVECT = { 0,0 };
+
 struct KeyframeVariables {
 	Eigen::Vector2f size;
 	Eigen::Vector2f pos;
