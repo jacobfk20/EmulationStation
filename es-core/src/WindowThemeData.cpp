@@ -179,6 +179,9 @@ bool WindowThemeData::parseFile(std::string path) {
 		return false;
 	}
 
+	// check file is xml
+	if (path.find(".xml") == std::string::npos) return false;
+
 	pugi::xml_document doc;
 	pugi::xml_parse_result res = doc.load_file(path.c_str());
 	if (!res)
