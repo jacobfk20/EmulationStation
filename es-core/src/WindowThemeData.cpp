@@ -8,6 +8,7 @@
 #include "pugixml/pugixml.hpp"
 #include <boost/assign.hpp>
 #include <fstream>
+#include <sstream>
 
 #include "components/ImageComponent.h"
 #include "components/TextComponent.h"
@@ -26,10 +27,12 @@ WindowThemeData* WindowThemeData::getInstance() {
 
 
 WindowThemeData::WindowThemeData() {
-	generateFiles();
-
 	// get all from WindowTheme folder
 	fs::path wtPath(getHomePath() + "/.emulationstation/WindowThemes");
+	string_path = getHomePath() + "/.emulationstation/WindowThemes";
+
+	generateFiles();
+
 	fs::directory_iterator end_itr;
 	for (fs::directory_iterator itr(wtPath); itr != end_itr; ++itr) {
 		parseFile(itr->path().generic_string());
@@ -198,10 +201,7 @@ bool WindowThemeData::parseFile(std::string path) {
 
 	// get text-default:
 	pugi::xml_node node = root.child("text-default");
-	if (node) {
-		if (node.child("color")) wintheme.default_text.color = getHexColor(node.child("color").text().as_string());
-		if (node.child("path")) wintheme.default_text.path = node.child("path").text().as_string();
-	}
+	if (node) getElementData(node, &wintheme.default_text);
 
 	// Start getting Window stuff:
 	pugi::xml_node window = root.child("window");
@@ -287,7 +287,8 @@ Alignment WindowThemeData::getAlignment(std::string align) {
 void WindowThemeData::getElementData(pugi::xml_node node, WindowThemeElement* themeElement) {
 	if (node.child("color")) themeElement->color = getHexColor(node.child("color").text().as_string());
 	if (node.child("color_focused")) themeElement->color_focused = getHexColor(node.child("color_focused").text().as_string());
-	if (node.child("path")) themeElement->path = node.child("path").text().as_string();
+	if (node.child("path")) themeElement->path = string_path + "/" + node.child("path").text().as_string();
+
 	if (node.child("path_focused")) themeElement->path_focused = node.child("path_focused").text().as_string();
 	if (node.child("path_selected")) themeElement->path_selected = node.child("path_selected").text().as_string();
 	if (node.child("alignment")) themeElement->alignment = getAlignment(node.child("alignment").text().as_string());

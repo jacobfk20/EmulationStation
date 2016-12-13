@@ -70,6 +70,8 @@ public:
 private:
 	WindowThemeData();
 
+	std::string string_path;
+
 	bool parseFile(std::string path);
 	void generateDefault();
 	Alignment getAlignment(std::string align);

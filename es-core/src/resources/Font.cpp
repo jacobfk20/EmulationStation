@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <boost/filesystem.hpp>
+#include "WindowThemeData.h"
 #include "Renderer.h"
 #include "Log.h"
 #include "Util.h"
@@ -226,7 +227,13 @@ void Font::unload(std::shared_ptr<ResourceManager>& rm)
 
 std::shared_ptr<Font> Font::get(int size, const std::string& path)
 {
-	const std::string canonicalPath = getCanonicalPath(path);
+	std::string canonicalPath = getCanonicalPath(path);
+
+	// get path from windowTheme if it is defined
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	if (wTheme->default_text.path != "") {
+		canonicalPath = wTheme->default_text.path;
+	}
 
 	std::pair<std::string, int> def(canonicalPath.empty() ? getDefaultPath() : canonicalPath, size);
 	auto foundFont = sFontMap.find(def);
