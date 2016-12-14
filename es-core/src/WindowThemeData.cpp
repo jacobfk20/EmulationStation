@@ -223,7 +223,7 @@ bool WindowThemeData::parseFile(std::string path) {
 	// Arrow
 	element = window.child("arrow");
 	if (element)
-		if (element.child("path")) wintheme.arrow = element.child("path").text().as_string();
+		if (element.child("path")) wintheme.arrow = string_path + "/" + element.child("path").text().as_string();
 
 
 	// ----------------- NORMAL THEME ITEMS ----------------
@@ -291,9 +291,8 @@ void WindowThemeData::getElementData(pugi::xml_node node, WindowThemeElement* th
 	if (node.child("color")) themeElement->color = getHexColor(node.child("color").text().as_string());
 	if (node.child("color_focused")) themeElement->color_focused = getHexColor(node.child("color_focused").text().as_string());
 	if (node.child("path")) themeElement->path = string_path + "/" + node.child("path").text().as_string();
-
-	if (node.child("path_focused")) themeElement->path_focused = node.child("path_focused").text().as_string();
-	if (node.child("path_selected")) themeElement->path_selected = node.child("path_selected").text().as_string();
+	if (node.child("path_focused")) themeElement->path_focused = string_path + "/" + node.child("path_focused").text().as_string();
+	if (node.child("path_selected")) themeElement->path_selected = string_path + "/" + node.child("path_selected").text().as_string();
 	if (node.child("alignment")) themeElement->alignment = getAlignment(node.child("alignment").text().as_string());
 	else themeElement->alignment = ALIGN_CENTER;
 }

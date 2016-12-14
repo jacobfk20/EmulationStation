@@ -34,7 +34,7 @@ class Font : public IReloadable
 public:
 	static void initLibrary();
 
-	static std::shared_ptr<Font> get(int size, const std::string& path = getDefaultPath());
+	static std::shared_ptr<Font> get(int size, const std::string& path = "");
 
 	virtual ~Font();
 
