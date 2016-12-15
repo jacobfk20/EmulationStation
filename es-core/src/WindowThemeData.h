@@ -32,6 +32,7 @@ struct WindowThemeElement {
 	std::string path_focused;
 	Alignment alignment;
 	std::string path_selected;		// Mostly for switch component "on"
+	float size;
 };
 
 struct WindowTheme {
@@ -40,10 +41,10 @@ struct WindowTheme {
 	WindowThemeElement title;
 	WindowThemeElement footer;
 	WindowThemeElement default_text;
-	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER, "" };
-	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER, "" };
-	WindowThemeElement Switch{ 0xFFFFFFFF, 0xFFFFFFFF, ":/off.svg", "", ALIGN_CENTER, ":/on.svg" };
-	WindowThemeElement slider{ 0xFFFFFFFF, 0xFFFFFFFF, ":/slider_knob.svg", "", ALIGN_CENTER, "" };
+	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER, "", 0 };
+	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER, "", 0 };
+	WindowThemeElement Switch{ 0xFFFFFFFF, 0xFFFFFFFF, ":/off.svg", "", ALIGN_CENTER, ":/on.svg", 0 };
+	WindowThemeElement slider{ 0xFFFFFFFF, 0xFFFFFFFF, ":/slider_knob.svg", "", ALIGN_CENTER, "", 0 };
 	unsigned int spacer_color = 0xFFFFFFFF;
 	unsigned int highlight_color = 0x777777FF;
 	std::string arrow = ":/arrow.svg";
@@ -66,6 +67,10 @@ public:
 
 	// Returns the current selected theme
 	WindowTheme* getCurrentTheme() { return mCurrentTheme; };
+
+	// Gets instance and returns current theme.  example: WindowThemeData::get()->footer.size;
+	// Instead of WindowThemeData::getInstance()->getCurrentTheme()->footer.size;
+	static WindowTheme* get();
 
 private:
 	WindowThemeData();

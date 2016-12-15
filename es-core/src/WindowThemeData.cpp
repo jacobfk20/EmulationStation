@@ -26,6 +26,11 @@ WindowThemeData* WindowThemeData::getInstance() {
 }
 
 
+WindowTheme* WindowThemeData::get() {
+	return getInstance()->getCurrentTheme();
+}
+
+
 WindowThemeData::WindowThemeData() {
 	// get all from WindowTheme folder
 	fs::path wtPath(getHomePath() + "/.emulationstation/WindowThemes");
@@ -290,6 +295,8 @@ Alignment WindowThemeData::getAlignment(std::string align) {
 void WindowThemeData::getElementData(pugi::xml_node node, WindowThemeElement* themeElement) {
 	if (node.child("color")) themeElement->color = getHexColor(node.child("color").text().as_string());
 	if (node.child("color_focused")) themeElement->color_focused = getHexColor(node.child("color_focused").text().as_string());
+	if (node.child("size")) themeElement->size = node.child("size").text().as_float();
+	else themeElement->size = 1;
 	if (node.child("path")) themeElement->path = string_path + "/" + node.child("path").text().as_string();
 	if (node.child("path_focused")) themeElement->path_focused = string_path + "/" + node.child("path_focused").text().as_string();
 	if (node.child("path_selected")) themeElement->path_selected = string_path + "/" + node.child("path_selected").text().as_string();
