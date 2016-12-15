@@ -235,6 +235,7 @@ std::shared_ptr<Font> Font::get(int size, const std::string& path)
 		auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
 		if (wTheme->default_text.path != "") {
 			canonicalPath = wTheme->default_text.path;
+			size *= WindowThemeData::get()->default_text.size;
 		}
 		else
 			canonicalPath = getCanonicalPath(getDefaultPath());

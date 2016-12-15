@@ -106,8 +106,18 @@ float SliderComponent::getValue()
 
 void SliderComponent::onSizeChanged()
 {
+	// Get theme data
+	auto wTheme = WindowThemeData::get();
+	float size = 1;
+	std::string path;
+
+	if (wTheme->default_text.path != "") {
+		path = wTheme->default_text.path;
+		size = wTheme->default_text.size;
+	}
+
 	if(!mSuffix.empty())
-		mFont = Font::get((int)(mSize.y()), FONT_PATH_LIGHT);
+		mFont = Font::get((int)(mSize.y()) * size, path.empty() ? FONT_PATH_LIGHT : path);
 	
 	onValueChanged();
 }

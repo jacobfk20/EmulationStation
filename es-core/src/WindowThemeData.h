@@ -41,10 +41,10 @@ struct WindowTheme {
 	WindowThemeElement title;
 	WindowThemeElement footer;
 	WindowThemeElement default_text;
-	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER, "", 0 };
-	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER, "", 0 };
-	WindowThemeElement Switch{ 0xFFFFFFFF, 0xFFFFFFFF, ":/off.svg", "", ALIGN_CENTER, ":/on.svg", 0 };
-	WindowThemeElement slider{ 0xFFFFFFFF, 0xFFFFFFFF, ":/slider_knob.svg", "", ALIGN_CENTER, "", 0 };
+	WindowThemeElement button{ 0xFFFFFFFF, 0x777777FF, "", "", ALIGN_CENTER, "", 1 };
+	WindowThemeElement option_list{ default_text.color_focused, default_text.color, ":/option_arrow.svg", ":/option_arrow.svg", ALIGN_CENTER, "", 1 };
+	WindowThemeElement Switch{ 0xFFFFFFFF, 0xFFFFFFFF, ":/off.svg", "", ALIGN_CENTER, ":/on.svg", 1 };
+	WindowThemeElement slider{ 0xFFFFFFFF, 0xFFFFFFFF, ":/slider_knob.svg", "", ALIGN_CENTER, "", 1 };
 	unsigned int spacer_color = 0xFFFFFFFF;
 	unsigned int highlight_color = 0x777777FF;
 	std::string arrow = ":/arrow.svg";

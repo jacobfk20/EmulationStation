@@ -44,7 +44,11 @@ private:
 		OptionListPopup(Window* window, OptionListComponent<T>* parent, const std::string& title) : GuiComponent(window),
 			mMenu(window, title.c_str()), mParent(parent)
 		{
-			auto font = Font::get(FONT_SIZE_MEDIUM);
+			auto wTheme = WindowThemeData::get();
+			float modSize = wTheme->default_text.size;
+			std::string wPath = wTheme->default_text.path;
+
+			auto font = Font::get(FONT_SIZE_MEDIUM * modSize, wPath);
 			ComponentListRow row;
 
 			// for select all/none
@@ -142,8 +146,8 @@ public:
 	OptionListComponent(Window* window, const std::string& name, bool multiSelect = false) : GuiComponent(window), mMultiSelect(multiSelect), mName(name), 
 		 mText(window), mLeftArrow(window), mRightArrow(window)
 	{
-		auto font = Font::get(FONT_SIZE_MEDIUM, FONT_PATH_LIGHT);
 		auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+		auto font = Font::get(FONT_SIZE_MEDIUM * wTheme->default_text.size, wTheme->default_text.path.empty() ? FONT_PATH_LIGHT : wTheme->default_text.path);
 		mText.setFont(font);
 		mText.setColor(wTheme->option_list.color);
 		mText.setAlignment(ALIGN_CENTER);
