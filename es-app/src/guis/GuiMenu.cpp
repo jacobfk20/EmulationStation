@@ -236,7 +236,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 	});
 
 	addEntry("QUIT", text_color, true,
-		[this] {
+		[this, text_color] {
 			auto s = new GuiSettings(mWindow, "QUIT");
 			
 			Window* window = mWindow;
@@ -249,7 +249,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						LOG(LogWarning) << "Restart terminated with non-zero result!";
 				}, "NO", nullptr));
 			});
-			row.addElement(std::make_shared<TextComponent>(window, "RESTART EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "RESTART EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 			s->addRow(row);
 
 			row.elements.clear();
@@ -260,7 +260,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						LOG(LogWarning) << "Restart terminated with non-zero result!";
 				}, "NO", nullptr));
 			});
-			row.addElement(std::make_shared<TextComponent>(window, "RESTART SYSTEM", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "RESTART SYSTEM", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 			s->addRow(row);
 
 			row.elements.clear();
@@ -271,7 +271,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						LOG(LogWarning) << "Shutdown terminated with non-zero result!";
 				}, "NO", nullptr));
 			});
-			row.addElement(std::make_shared<TextComponent>(window, "SHUTDOWN SYSTEM", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "SHUTDOWN SYSTEM", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 			s->addRow(row);
 
 			if(Settings::getInstance()->getBool("ShowExit"))
@@ -285,7 +285,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						SDL_PushEvent(&ev);
 					}, "NO", nullptr));
 				});
-				row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+				row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 				s->addRow(row);
 			}
 
