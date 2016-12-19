@@ -1,4 +1,5 @@
 #include "components/SliderComponent.h"
+#include "WindowThemeData.h"
 #include <assert.h>
 #include "Renderer.h"
 #include "resources/Font.h"
@@ -13,11 +14,15 @@ SliderComponent::SliderComponent(Window* window, float min, float max, float inc
 {
 	assert((min - max) != 0);
 
+	// Get theme data
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+
 	// some sane default value
 	mValue = (max + min) / 2;
 
 	mKnob.setOrigin(0.5f, 0.5f);
-	mKnob.setImage(":/slider_knob.svg");
+	mKnob.setImage(wTheme->slider.path);
+	mKnob.setColorShift(wTheme->slider.color);
 	
 	setSize(Renderer::getScreenWidth() * 0.15f, Font::get(FONT_SIZE_MEDIUM)->getLetterHeight());
 }
@@ -74,7 +79,8 @@ void SliderComponent::render(const Eigen::Affine3f& parentTrans)
 
 	//render line
 	const float lineWidth = 2;
-	Renderer::drawRect(mKnob.getSize().x() / 2, mSize.y() / 2 - lineWidth / 2, width, lineWidth, 0x777777FF);
+	Renderer::drawRect(mKnob.getSize().x() / 2, mSize.y() / 2 - lineWidth / 2, width, lineWidth, 
+		WindowThemeData::getInstance()->getCurrentTheme()->default_text.color);
 
 	//render knob
 	mKnob.render(trans);
@@ -100,8 +106,18 @@ float SliderComponent::getValue()
 
 void SliderComponent::onSizeChanged()
 {
+	// Get theme data
+	auto wTheme = WindowThemeData::get();
+	float size = 1;
+	std::string path;
+
+	if (wTheme->default_text.path != "") {
+		path = wTheme->default_text.path;
+		size = wTheme->default_text.size;
+	}
+
 	if(!mSuffix.empty())
-		mFont = Font::get((int)(mSize.y()), FONT_PATH_LIGHT);
+		mFont = Font::get((int)(mSize.y()) * size, path.empty() ? FONT_PATH_LIGHT : path);
 	
 	onValueChanged();
 }
@@ -127,7 +143,8 @@ void SliderComponent::onValueChanged()
 		const std::string max = ss.str();
 
 		Eigen::Vector2f textSize = mFont->sizeText(max);
-		mValueCache = std::shared_ptr<TextCache>(mFont->buildTextCache(val, mSize.x() - textSize.x(), (mSize.y() - textSize.y()) / 2, 0x777777FF));
+		mValueCache = std::shared_ptr<TextCache>(mFont->buildTextCache(val, mSize.x() - textSize.x(), (mSize.y() - textSize.y()) / 2, 
+			WindowThemeData::getInstance()->getCurrentTheme()->default_text.color));
 		mValueCache->metrics.size[0] = textSize.x(); // fudge the width
 	}
 

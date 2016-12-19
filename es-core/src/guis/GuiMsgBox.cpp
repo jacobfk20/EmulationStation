@@ -1,4 +1,5 @@
 #include "guis/GuiMsgBox.h"
+#include "WindowThemeData.h"
 #include "Renderer.h"
 #include "components/TextComponent.h"
 #include "components/ButtonComponent.h"
@@ -14,10 +15,13 @@ GuiMsgBox::GuiMsgBox(Window* window, const std::string& text,
 	const std::string& name3, const std::function<void()>& func3) : GuiComponent(window), 
 	mBackground(window, ":/frame.png"), mGrid(window, Eigen::Vector2i(1, 2))
 {
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mBackground.setColor(wTheme->background.color);
+
 	float width = Renderer::getScreenWidth() * 0.6f; // max width
 	float minWidth = Renderer::getScreenWidth() * 0.3f; // minimum width
 
-	mMsg = std::make_shared<TextComponent>(mWindow, text, Font::get(FONT_SIZE_MEDIUM), 0x777777FF, ALIGN_CENTER);
+	mMsg = std::make_shared<TextComponent>(mWindow, text, Font::get(FONT_SIZE_MEDIUM), wTheme->default_text.color, ALIGN_CENTER);
 	mGrid.setEntry(mMsg, Eigen::Vector2i(0, 0), false, false);
 
 	// create the buttons

@@ -174,6 +174,19 @@ void NinePatchComponent::render(const Eigen::Affine3f& parentTrans)
 	renderChildren(trans);
 }
 
+void NinePatchComponent::setOpacity(unsigned char opacity) {
+	mOpacity = opacity;
+	mCenterColor = (mCenterColor >> 8 << 8) | opacity;
+	mEdgeColor = (mEdgeColor >> 8 << 8) | opacity;
+	updateColors();
+}
+
+void NinePatchComponent::setColor(unsigned int color) {
+	mCenterColor = color;
+	mEdgeColor = color;
+	updateColors();
+}
+
 void NinePatchComponent::onSizeChanged()
 {
 	buildVertices();

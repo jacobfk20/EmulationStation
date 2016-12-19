@@ -27,6 +27,14 @@ MenuComponent::MenuComponent(Window* window, const char* title, const std::share
 	mList = std::make_shared<ComponentList>(mWindow);
 	mGrid.setEntry(mList, Vector2i(0, 1), true);
 
+	// set up footer
+	mFooter = std::make_shared<TextComponent>(mWindow);
+	mFooter->setAlignment(ALIGN_CENTER);
+	mFooter->setColor(0x999999FF);
+	mGrid.setEntry(mFooter, Vector2i(0, 2), false);
+
+	setTheme();
+
 	updateGrid();
 	updateSize();
 
@@ -37,6 +45,22 @@ void MenuComponent::setTitle(const char* title, const std::shared_ptr<Font>& fon
 {
 	mTitle->setText(strToUpper(title));
 	mTitle->setFont(font);
+}
+
+void MenuComponent::setFooter(const std::string& footer, const std::shared_ptr<Font>& font) {
+	mFooter->setText(footer);
+	mFooter->setFont(font);
+}
+
+void MenuComponent::setTheme() {
+	auto wtd = WindowThemeData::getInstance()->getCurrentTheme();
+	mBackground.setCenterColor(wtd->background.color);
+	mBackground.setEdgeColor(wtd->background.color);
+	mTitle->setColor(wtd->title.color);
+	mTitle->setAlignment(wtd->title.alignment);
+	mFooter->setColor(wtd->footer.color);
+	mFooter->setAlignment(wtd->footer.alignment);
+	mTextColor = wtd->default_text.color;
 }
 
 float MenuComponent::getButtonGridHeight() const
@@ -79,6 +103,9 @@ void MenuComponent::onSizeChanged()
 
 void MenuComponent::addButton(const std::string& name, const std::string& helpText, const std::function<void()>& callback)
 {
+	// Remove the footer to make room for buttons
+	if (mButtons.size() < 1) mGrid.removeEntry(mFooter);
+
 	mButtons.push_back(std::make_shared<ButtonComponent>(mWindow, strToUpper(name), helpText, callback));
 	updateGrid();
 	updateSize();
@@ -86,8 +113,8 @@ void MenuComponent::addButton(const std::string& name, const std::string& helpTe
 
 void MenuComponent::updateGrid()
 {
-	if(mButtonGrid)
-		mGrid.removeEntry(mButtonGrid);
+	if (mButtonGrid)
+		mGrid.removeEntry(mButtonGrid);		
 
 	mButtonGrid.reset();
 

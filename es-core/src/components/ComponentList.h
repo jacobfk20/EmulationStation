@@ -2,6 +2,7 @@
 
 #include "IList.h"
 #include <functional>
+#include "WindowThemeData.h"
 
 struct ComponentListElement
 {

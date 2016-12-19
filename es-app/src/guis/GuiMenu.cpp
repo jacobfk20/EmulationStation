@@ -5,6 +5,7 @@
 #include "Sound.h"
 #include "Log.h"
 #include "Settings.h"
+#include "WindowThemeData.h"
 #include "guis/GuiMsgBox.h"
 #include "guis/GuiSettings.h"
 #include "guis/GuiScraperStart.h"
@@ -21,6 +22,10 @@
 #include "scrapers/GamesDBScraper.h"
 #include "scrapers/TheArchiveScraper.h"
 
+#include "animations/LaunchAnimation.h"
+#include "animations/MoveCameraAnimation.h"
+#include "animations/LambdaAnimation.h"
+
 GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MENU"), mVersion(window)
 {
 	// MAIN MENU
@@ -33,9 +38,13 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 
 	// [version]
 
+
+	// Get window theme default text color
+	unsigned int text_color = WindowThemeData::getInstance()->getCurrentTheme()->default_text.color;
+
 	auto openScrapeNow = [this] { mWindow->pushGui(new GuiScraperStart(mWindow)); };
-	addEntry("SCRAPER", 0x777777FF, true, 
-		[this, openScrapeNow] { 
+	addEntry("SCRAPER", text_color, true, 
+		[this, openScrapeNow, text_color] { 
 			auto s = new GuiSettings(mWindow, "SCRAPER");
 
 			// scrape from
@@ -59,7 +68,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			openAndSave = [s, openAndSave] { s->save(); openAndSave(); };
 			row.makeAcceptInputHandler(openAndSave);
 
-			auto scrape_now = std::make_shared<TextComponent>(mWindow, "SCRAPE NOW", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+			auto scrape_now = std::make_shared<TextComponent>(mWindow, "SCRAPE NOW", Font::get(FONT_SIZE_MEDIUM), text_color);
 			auto bracket = makeArrow(mWindow);
 			row.addElement(scrape_now, true);
 			row.addElement(bracket, false);
@@ -68,7 +77,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	addEntry("SOUND SETTINGS", 0x777777FF, true, 
+	addEntry("SOUND SETTINGS", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "SOUND SETTINGS");
 
@@ -87,7 +96,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	addEntry("UI SETTINGS", 0x777777FF, true,
+	addEntry("UI SETTINGS", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "UI SETTINGS");
 
@@ -169,10 +178,35 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 				});
 			}
 
+			// Window theme set
+			auto windowThemeNames = WindowThemeData::getInstance()->getThemeNames();
+
+			if (!windowThemeNames.empty()) {
+				auto win_theme_set = std::make_shared<OptionListComponent<std::string>>(mWindow, "WINDOW THEMES", false);
+				for (auto t = windowThemeNames.begin(); t != windowThemeNames.end(); t++) {
+					win_theme_set->add((*t), (*t), WindowThemeData::getInstance()->getCurrentTheme()->name == (*t));
+				}
+
+				s->addWithLabel("WINDOW THEME", win_theme_set);
+
+				s->addSaveFunc([win_theme_set] {
+					bool needReload = false;
+					if (Settings::getInstance()->getString("WindowTheme") != win_theme_set->getSelected())
+						needReload = true;
+
+					Settings::getInstance()->setString("WindowTheme", win_theme_set->getSelected());
+
+					WindowThemeData::getInstance()->setTheme(win_theme_set->getSelected());
+
+					if (needReload)
+						ViewController::get()->reloadAll();
+				});
+			}
+
 			mWindow->pushGui(s);
 	});
 
-	addEntry("OTHER SETTINGS", 0x777777FF, true,
+	addEntry("OTHER SETTINGS", text_color, true,
 		[this] {
 			auto s = new GuiSettings(mWindow, "OTHER SETTINGS");
 
@@ -190,18 +224,18 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			mWindow->pushGui(s);
 	});
 
-	addEntry("CONFIGURE INPUT", 0x777777FF, true, 
+	addEntry("CONFIGURE INPUT", text_color, true,
 		[this] { 
 			mWindow->pushGui(new GuiDetectDevice(mWindow, false, nullptr));
 	});
 
-	addEntry("SYSTEM SETTINGS", 0x777777FF, true,
+	addEntry("SYSTEM SETTINGS", text_color, true,
 		[this] {
 			mWindow->pushGui(new GuiSystemSettings(mWindow));
 	});
 
-	addEntry("QUIT", 0x777777FF, true, 
-		[this] {
+	addEntry("QUIT", text_color, true,
+		[this, text_color] {
 			auto s = new GuiSettings(mWindow, "QUIT");
 			
 			Window* window = mWindow;
@@ -214,7 +248,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						LOG(LogWarning) << "Restart terminated with non-zero result!";
 				}, "NO", nullptr));
 			});
-			row.addElement(std::make_shared<TextComponent>(window, "RESTART EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "RESTART EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 			s->addRow(row);
 
 			row.elements.clear();
@@ -225,7 +259,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						LOG(LogWarning) << "Restart terminated with non-zero result!";
 				}, "NO", nullptr));
 			});
-			row.addElement(std::make_shared<TextComponent>(window, "RESTART SYSTEM", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "RESTART SYSTEM", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 			s->addRow(row);
 
 			row.elements.clear();
@@ -236,7 +270,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						LOG(LogWarning) << "Shutdown terminated with non-zero result!";
 				}, "NO", nullptr));
 			});
-			row.addElement(std::make_shared<TextComponent>(window, "SHUTDOWN SYSTEM", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "SHUTDOWN SYSTEM", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 			s->addRow(row);
 
 			if(Settings::getInstance()->getBool("ShowExit"))
@@ -250,29 +284,34 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 						SDL_PushEvent(&ev);
 					}, "NO", nullptr));
 				});
-				row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+				row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), text_color), true);
 				s->addRow(row);
 			}
 
 			mWindow->pushGui(s);
 	});
 
-	mVersion.setFont(Font::get(FONT_SIZE_SMALL));
-	mVersion.setColor(0xC6C6C6FF);
-	mVersion.setText("EMULATIONSTATION V" + strToUpper(PROGRAM_VERSION_STRING));
-	mVersion.setAlignment(ALIGN_CENTER);
+	mMenu.setFooter("EMULATIONSTATION V" + strToUpper(PROGRAM_VERSION_STRING));
 
 	addChild(&mMenu);
-	addChild(&mVersion);
 
 	setSize(mMenu.getSize());
-	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.15f);
+	setPosition((Renderer::getScreenWidth() - mSize.x()) / 2, Renderer::getScreenHeight() * 0.3f);
+
+
+	// Animation
+	auto fadeFunc = [this](float t) {
+		setOpacity(lerp<float>(0, 255, t));
+		setPosition(getPosition().x(), lerp<float>(getPosition().y(), Renderer::getScreenHeight() * .15f, t));
+	};
+
+	setOpacity(0);
+
+	setAnimation(new LambdaAnimation(fadeFunc, 200), 0);
 }
 
 void GuiMenu::onSizeChanged()
 {
-	mVersion.setSize(mSize.x(), 0);
-	mVersion.setPosition(0, mSize.y() - mVersion.getSize().y());
 }
 
 void GuiMenu::addEntry(const char* name, unsigned int color, bool add_arrow, const std::function<void()>& func)

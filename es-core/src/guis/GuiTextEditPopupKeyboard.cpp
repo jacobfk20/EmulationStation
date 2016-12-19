@@ -1,4 +1,5 @@
 #include "guis/GuiTextEditPopupKeyboard.h"
+#include "WindowThemeData.h"
 #include "components/MenuComponent.h"
 #include "Log.h"
 #include <locale>
@@ -12,7 +13,10 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 	addChild(&mBackground);
 	addChild(&mGrid);
 
-	mTitle = std::make_shared<TextComponent>(mWindow, strToUpper(title), Font::get(FONT_SIZE_LARGE), 0x555555FF, ALIGN_CENTER);
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mBackground.setColor(wTheme->background.color);
+
+	mTitle = std::make_shared<TextComponent>(mWindow, strToUpper(title), Font::get(FONT_SIZE_LARGE), wTheme->title.color, wTheme->title.alignment);
 	mKeyboardGrid = std::make_shared<ComponentGrid>(mWindow, Vector2i(10, 5));
 
 	mText = std::make_shared<TextEditComponent>(mWindow);

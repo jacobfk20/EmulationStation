@@ -12,6 +12,7 @@
 #include "Settings.h"
 #include "Log.h"
 #include "Util.h"
+#include "WindowThemeData.h"
 #include "guis/GuiTextEditPopup.h"
 #include "guis/GuiTextEditPopupKeyboard.h"
 
@@ -19,6 +20,9 @@ ScraperSearchComponent::ScraperSearchComponent(Window* window, SearchType type) 
 	mGrid(window, Eigen::Vector2i(4, 3)), mBusyAnim(window), 
 	mSearchType(type)
 {
+	// Get window theme
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+
 	addChild(&mGrid);
 
 	mBlockAccept = false;
@@ -29,7 +33,7 @@ ScraperSearchComponent::ScraperSearchComponent(Window* window, SearchType type) 
 	mGrid.setEntry(std::make_shared<GuiComponent>(mWindow), Vector2i(0, 0), false, false, Vector2i(1, 3), GridFlags::BORDER_TOP | GridFlags::BORDER_BOTTOM);
 
 	// selected result name
-	mResultName = std::make_shared<TextComponent>(mWindow, "Result name", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	mResultName = std::make_shared<TextComponent>(mWindow, "Result name", Font::get(FONT_SIZE_MEDIUM), wTheme->default_text.color);
 
 	// selected result thumbnail
 	mResultThumbnail = std::make_shared<ImageComponent>(mWindow);
@@ -37,14 +41,14 @@ ScraperSearchComponent::ScraperSearchComponent(Window* window, SearchType type) 
 
 	// selected result desc + container
 	mDescContainer = std::make_shared<ScrollableContainer>(mWindow);
-	mResultDesc = std::make_shared<TextComponent>(mWindow, "Result desc", Font::get(FONT_SIZE_SMALL), 0x777777FF);
+	mResultDesc = std::make_shared<TextComponent>(mWindow, "Result desc", Font::get(FONT_SIZE_SMALL), wTheme->default_text.color);
 	mDescContainer->addChild(mResultDesc.get());
 	mDescContainer->setAutoScroll(true);
 	
 	// metadata
 	auto font = Font::get(FONT_SIZE_SMALL); // this gets replaced in onSizeChanged() so its just a placeholder
-	const unsigned int mdColor = 0x777777FF;
-	const unsigned int mdLblColor = 0x666666FF;
+	const unsigned int mdColor = wTheme->default_text.color;
+	const unsigned int mdLblColor = wTheme->default_text.color;
 	mMD_Rating = std::make_shared<RatingComponent>(mWindow);
 	mMD_ReleaseDate = std::make_shared<DateTimeComponent>(mWindow);
 	mMD_ReleaseDate->setColor(mdColor);
@@ -233,7 +237,7 @@ void ScraperSearchComponent::onSearchDone(const std::vector<ScraperSearchResult>
 	const int end = results.size() > MAX_SCRAPER_RESULTS ? MAX_SCRAPER_RESULTS : results.size(); // at max display 5
 
 	auto font = Font::get(FONT_SIZE_MEDIUM);
-	unsigned int color = 0x777777FF;
+	unsigned int color = WindowThemeData::getInstance()->getCurrentTheme()->default_text.color;
 	if(end == 0)
 	{
 		ComponentListRow row;

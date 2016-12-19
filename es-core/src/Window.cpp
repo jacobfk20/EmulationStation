@@ -9,6 +9,9 @@
 #include "components/HelpComponent.h"
 #include "components/ImageComponent.h"
 
+#include "animations/Animation.h"
+#include "animations/LambdaAnimation.h"
+
 Window::Window() : mNormalizeNextUpdate(false), mFrameTimeElapsed(0), mFrameCountElapsed(0), mAverageDeltaTime(10), 
 	mAllowSleep(true), mSleeping(false), mTimeSinceLastInput(0)
 {
@@ -29,6 +32,12 @@ Window::~Window()
 
 void Window::pushGui(GuiComponent* gui)
 {
+	if (mGuiStack.size() == 1) {
+		mBackgroundOverlay->setOpacity(0);
+		auto fadeFunc = [this](float t) { mBackgroundOverlay->setOpacity(lerp<float>(0, 255, t)); };
+		mBackgroundOverlay->setAnimation(new LambdaAnimation(fadeFunc, 200), 0);
+	}
+
 	mGuiStack.push_back(gui);
 	gui->updateHelpPrompts();
 }
@@ -44,9 +53,16 @@ void Window::removeGui(GuiComponent* gui)
 			if(i == mGuiStack.end() && mGuiStack.size()) // we just popped the stack and the stack is not empty
 				mGuiStack.back()->updateHelpPrompts();
 
+			// fade overlay out if no windows are open
+			if (mGuiStack.size() < 2) {
+				auto fadeFunc = [this](float t) { mBackgroundOverlay->setOpacity(lerp<float>(255, 0, t)); };
+				mBackgroundOverlay->setAnimation(new LambdaAnimation(fadeFunc, 200), 0);
+			}
+
 			return;
 		}
 	}
+
 }
 
 GuiComponent* Window::peekGui()
@@ -140,6 +156,8 @@ void Window::update(int deltaTime)
 			deltaTime = mAverageDeltaTime;
 	}
 
+	mBackgroundOverlay->update(deltaTime);
+
 	mFrameTimeElapsed += deltaTime;
 	mFrameCountElapsed++;
 	if(mFrameTimeElapsed > 500)
@@ -190,7 +208,9 @@ void Window::render()
 		{
 			mBackgroundOverlay->render(transform);
 			top->render(transform);
-		}
+		} else 
+		if (mBackgroundOverlay->isAnimationPlaying(0) && mBackgroundOverlay->getOpacity() > 0)
+			mBackgroundOverlay->render(transform);
 	}
 
 	if(!mRenderedHelpPrompts)

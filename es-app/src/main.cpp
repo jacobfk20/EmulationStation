@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "views/ViewController.h"
 #include "SystemData.h"
+#include "WindowThemeData.h"
 #include <boost/filesystem.hpp>
 #include "guis/GuiDetectDevice.h"
 #include "guis/GuiMsgBox.h"

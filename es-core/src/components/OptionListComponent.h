@@ -4,6 +4,7 @@
 #include "resources/Font.h"
 #include "Renderer.h"
 #include "Window.h"
+#include "WindowThemeData.h"
 #include "components/TextComponent.h"
 #include "components/ImageComponent.h"
 #include "components/MenuComponent.h"
@@ -43,7 +44,11 @@ private:
 		OptionListPopup(Window* window, OptionListComponent<T>* parent, const std::string& title) : GuiComponent(window),
 			mMenu(window, title.c_str()), mParent(parent)
 		{
-			auto font = Font::get(FONT_SIZE_MEDIUM);
+			auto wTheme = WindowThemeData::get();
+			float modSize = wTheme->default_text.size;
+			std::string wPath = wTheme->default_text.path;
+
+			auto font = Font::get(FONT_SIZE_MEDIUM * modSize, wPath);
 			ComponentListRow row;
 
 			// for select all/none
@@ -52,7 +57,7 @@ private:
 			for(auto it = mParent->mEntries.begin(); it != mParent->mEntries.end(); it++)
 			{
 				row.elements.clear();
-				row.addElement(std::make_shared<TextComponent>(mWindow, strToUpper(it->name), font, 0x777777FF), true);
+				row.addElement(std::make_shared<TextComponent>(mWindow, strToUpper(it->name), font, mMenu.getTextColor()), true);
 
 				OptionListData& e = *it;
 
@@ -141,22 +146,23 @@ public:
 	OptionListComponent(Window* window, const std::string& name, bool multiSelect = false) : GuiComponent(window), mMultiSelect(multiSelect), mName(name), 
 		 mText(window), mLeftArrow(window), mRightArrow(window)
 	{
-		auto font = Font::get(FONT_SIZE_MEDIUM, FONT_PATH_LIGHT);
+		auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+		auto font = Font::get(FONT_SIZE_MEDIUM * wTheme->default_text.size, wTheme->default_text.path.empty() ? FONT_PATH_LIGHT : wTheme->default_text.path);
 		mText.setFont(font);
-		mText.setColor(0x777777FF);
+		mText.setColor(wTheme->option_list.color);
 		mText.setAlignment(ALIGN_CENTER);
 		addChild(&mText);
 
 		if(mMultiSelect)
 		{
-			mRightArrow.setImage(":/arrow.svg");
+			mRightArrow.setImage(wTheme->arrow);
 			addChild(&mRightArrow);
 		}else{
-			mLeftArrow.setImage(":/option_arrow.svg");
+			mLeftArrow.setImage(wTheme->option_list.path);
 			mLeftArrow.setFlipX(true);
 			addChild(&mLeftArrow);
 
-			mRightArrow.setImage(":/option_arrow.svg");
+			mRightArrow.setImage(wTheme->option_list.path);
 			addChild(&mRightArrow);
 		}
 

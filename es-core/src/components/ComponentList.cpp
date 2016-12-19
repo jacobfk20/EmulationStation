@@ -161,6 +161,8 @@ void ComponentList::render(const Eigen::Affine3f& parentTrans)
 	if(!size())
 		return;
 
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+
 	Eigen::Affine3f trans = roundMatrix(parentTrans * getTransform());
 
 	// clip everything to be inside our bounds
@@ -204,7 +206,7 @@ void ComponentList::render(const Eigen::Affine3f& parentTrans)
 		const float selectedRowHeight = getRowHeight(mEntries.at(mCursor).data);
 		Renderer::drawRect(0.0f, mSelectorBarOffset, mSize.x(), selectedRowHeight, 0xFFFFFFFF,
 			GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-		Renderer::drawRect(0.0f, mSelectorBarOffset, mSize.x(), selectedRowHeight, 0x777777FF,
+		Renderer::drawRect(0.0f, mSelectorBarOffset, mSize.x(), selectedRowHeight, wTheme->highlight_color,
 			GL_ONE, GL_ONE);
 	
 		// hack to draw 2px dark on left/right of the bar
@@ -223,10 +225,10 @@ void ComponentList::render(const Eigen::Affine3f& parentTrans)
 	float y = 0;
 	for(unsigned int i = 0; i < mEntries.size(); i++)
 	{
-		Renderer::drawRect(0.0f, y, mSize.x(), 1.0f, 0xC6C7C6FF);
+		Renderer::drawRect(0.0f, y, mSize.x(), 1.0f, wTheme->spacer_color);
 		y += getRowHeight(mEntries.at(i).data);
 	}
-	Renderer::drawRect(0.0f, y, mSize.x(), 1.0f, 0xC6C7C6FF);
+	Renderer::drawRect(0.0f, y, mSize.x(), 1.0f, wTheme->spacer_color);
 
 	Renderer::popClipRect();
 }

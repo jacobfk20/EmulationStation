@@ -7,6 +7,7 @@
 #include "guis/GuiGameScraper.h"
 #include "guis/GuiMsgBox.h"
 #include <boost/filesystem.hpp>
+#include "WindowThemeData.h"
 
 #include "components/TextEditComponent.h"
 #include "components/DateTimeComponent.h"
@@ -27,14 +28,18 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 	mMetaData(md), 
 	mSavedCallback(saveCallback), mDeleteFunc(deleteFunc)
 {
+	// Get WindowThemeData for window theme
+	auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+	mBackground.setColor(wTheme->background.color);
+
 	addChild(&mBackground);
 	addChild(&mGrid);
 
 	mHeaderGrid = std::make_shared<ComponentGrid>(mWindow, Vector2i(1, 5));
 	
-	mTitle = std::make_shared<TextComponent>(mWindow, "EDIT METADATA", Font::get(FONT_SIZE_LARGE), 0x555555FF, ALIGN_CENTER);
+	mTitle = std::make_shared<TextComponent>(mWindow, "EDIT METADATA", Font::get(FONT_SIZE_LARGE), wTheme->title.color, ALIGN_CENTER);
 	mSubtitle = std::make_shared<TextComponent>(mWindow, strToUpper(scraperParams.game->getPath().filename().generic_string()), 
-		Font::get(FONT_SIZE_SMALL), 0x777777FF, ALIGN_CENTER);
+		Font::get(FONT_SIZE_SMALL), wTheme->default_text.color, ALIGN_CENTER);
 	mHeaderGrid->setEntry(mTitle, Vector2i(0, 1), false, true);
 	mHeaderGrid->setEntry(mSubtitle, Vector2i(0, 3), false, true);
 
@@ -55,7 +60,7 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 		// create ed and add it (and any related components) to mMenu
 		// ed's value will be set below
 		ComponentListRow row;
-		auto lbl = std::make_shared<TextComponent>(mWindow, strToUpper(iter->displayName), Font::get(FONT_SIZE_SMALL), 0x777777FF);
+		auto lbl = std::make_shared<TextComponent>(mWindow, strToUpper(iter->displayName), Font::get(FONT_SIZE_SMALL), wTheme->default_text.color);
 		row.addElement(lbl, true); // label
 
 		switch(iter->type)
@@ -100,7 +105,7 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 		default:
 			{
 				// MD_STRING
-				ed = std::make_shared<TextComponent>(window, "", Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT), 0x777777FF, ALIGN_RIGHT);
+				ed = std::make_shared<TextComponent>(window, "", Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT), wTheme->default_text.color, ALIGN_RIGHT);
 				row.addElement(ed, true);
 				
 				auto spacer = std::make_shared<GuiComponent>(mWindow);
@@ -108,7 +113,7 @@ GuiMetaDataEd::GuiMetaDataEd(Window* window, MetaDataList* md, const std::vector
 				row.addElement(spacer, false);
 
 				auto bracket = std::make_shared<ImageComponent>(mWindow);
-				bracket->setImage(":/arrow.svg");
+				bracket->setImage(wTheme->arrow);
 				bracket->setResize(Eigen::Vector2f(0, lbl->getFont()->getLetterHeight()));
 				row.addElement(bracket, false);
 

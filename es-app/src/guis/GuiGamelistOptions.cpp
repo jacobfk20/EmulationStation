@@ -8,6 +8,8 @@
 #include "SystemData.h"
 #include "Log.h"
 
+#include "animations/LambdaAnimation.h"
+
 GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : GuiComponent(window), 
 	mSystem(system), 
 	mMenu(window, "OPTIONS")
@@ -24,7 +26,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 		mJumpToLetterList->add(std::string(1, c), c, c == curChar);
 
 	ComponentListRow row;
-	row.addElement(std::make_shared<TextComponent>(mWindow, "JUMP TO LETTER", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(mWindow, "JUMP TO LETTER", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor()), true);
 	row.addElement(mJumpToLetterList, false);
 	row.input_handler = [&](InputConfig* config, Input input) {
 		if(config->isMappedTo("a", input) && input.value)
@@ -52,14 +54,14 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 
 	// edit game metadata
 	row.elements.clear();
-	row.addElement(std::make_shared<TextComponent>(mWindow, "EDIT THIS GAME'S METADATA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(mWindow, "EDIT THIS GAME'S METADATA", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor()), true);
 	row.addElement(makeArrow(mWindow), false);
 	row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openMetaDataEd, this));
 	mMenu.addRow(row);
 
 	// --- SYSTEM UI SETTINGS ---
 	row.elements.clear();
-	auto settings_text = std::make_shared<TextComponent>(mWindow, "SYSTEM UI SETTINGS", Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+	auto settings_text = std::make_shared<TextComponent>(mWindow, "SYSTEM UI SETTINGS", Font::get(FONT_SIZE_MEDIUM), mMenu.getTextColor());
 	row.addElement(settings_text, true);
 	row.addElement(makeArrow(mWindow), false);
 	row.makeAcceptInputHandler([this, system] {
@@ -70,7 +72,17 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 
 	// center the menu
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
-	mMenu.setPosition((mSize.x() - mMenu.getSize().x()) / 2, (mSize.y() - mMenu.getSize().y()) / 2);
+	mMenu.setPosition((mSize.x() - mMenu.getSize().x()) / 2, (mSize.y() - mMenu.getSize().y()));
+
+	// Animation
+	auto fadeFunc = [this](float t) {
+		setOpacity(lerp<float>(0, 255, t));
+		setPosition(getPosition().x(), lerp<float>(getPosition().y(), ((mSize.y() - mMenu.getSize().y()) / 2) * -1, t));
+	};
+
+	setOpacity(0);
+
+	setAnimation(new LambdaAnimation(fadeFunc, 200), 0);
 }
 
 GuiGamelistOptions::~GuiGamelistOptions()

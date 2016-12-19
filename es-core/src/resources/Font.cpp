@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <boost/filesystem.hpp>
+#include "WindowThemeData.h"
 #include "Renderer.h"
 #include "Log.h"
 #include "Util.h"
@@ -226,14 +227,36 @@ void Font::unload(std::shared_ptr<ResourceManager>& rm)
 
 std::shared_ptr<Font> Font::get(int size, const std::string& path)
 {
-	const std::string canonicalPath = getCanonicalPath(path);
+	std::string canonicalPath;
 
+
+	if (path == "") {
+		// get path from windowTheme if it is defined
+		auto wTheme = WindowThemeData::getInstance()->getCurrentTheme();
+		if (wTheme->default_text.path != "") {
+			canonicalPath = wTheme->default_text.path;
+			size *= WindowThemeData::get()->default_text.size;
+		}
+		else
+			canonicalPath = getCanonicalPath(getDefaultPath());
+	}
+	else
+		canonicalPath = path;
+
+	boost::filesystem::path fPath(canonicalPath);
+	std::string fontName = fPath.filename().string();
+
+	// First: check if font is already loaded using path as key.
 	std::pair<std::string, int> def(canonicalPath.empty() ? getDefaultPath() : canonicalPath, size);
 	auto foundFont = sFontMap.find(def);
-	if(foundFont != sFontMap.end())
-	{
-		if(!foundFont->second.expired())
-			return foundFont->second.lock();
+	if (foundFont != sFontMap.end()) 
+		if (!foundFont->second.expired()) return foundFont->second.lock();
+
+	// Second: If font couldn't be found using the key then search the map using just the font name + ext.
+	for (auto it = sFontMap.begin(); it != sFontMap.end(); ++it) {
+		std::string tempName = boost::filesystem::path(it->first.first).filename().generic_string();
+		if (fontName == tempName && it->first.second == size) 
+			if (!it->second.expired())  return it->second.lock();
 	}
 
 	std::shared_ptr<Font> font = std::shared_ptr<Font>(new Font(def.second, def.first));
