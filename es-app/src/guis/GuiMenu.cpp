@@ -25,7 +25,6 @@
 #include "animations/LaunchAnimation.h"
 #include "animations/MoveCameraAnimation.h"
 #include "animations/LambdaAnimation.h"
-#include "animations/FadeInUp.h"
 
 GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MENU"), mVersion(window)
 {
