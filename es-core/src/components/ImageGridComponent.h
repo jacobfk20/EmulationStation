@@ -14,6 +14,8 @@
 #include "Renderer.h"
 #include "Log.h"
 
+class FileData;
+
 struct ImageGridData
 {
 	std::shared_ptr<TextureResource> texture;
@@ -516,7 +518,7 @@ void ImageGridComponent<T>::applyTheme(const std::shared_ptr<ThemeData>& theme, 
 	auto elem = theme->getElement(view, "md_grid_margin", "container");
 	if (elem) {
 		if (elem->has("size")) 
-			setMargin(elem->get<Vector2f>("size").cwiseProduct(screen));
+			setMargin(elem->get<Vector2f>("size") * screen);
 	} 
 
 	// Grid Size (Columns and Rows)
