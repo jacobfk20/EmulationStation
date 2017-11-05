@@ -1,6 +1,7 @@
 #include "views/gamelist/GridGameListView.h"
 #include "views/ViewController.h"
 #include "animations/LambdaAnimation.h"
+#include <boost/filesystem/operations.hpp>
 
 // ===========================================================================
 // Part of this was written by Aloshi but was never finished and added to ES. 
@@ -27,7 +28,7 @@ GridGameListView::GridGameListView(Window* window, FileData* root) : ISimpleGame
 	mGameTitle.setPosition(0, mSize.y() * 0.05f);
 	mGameTitle.setColor(0xAAAAAAFF);
 	mGameTitle.setSize(mSize.x(), 0);
-	mGameTitle.setAlignment(ALIGN_CENTER);
+	mGameTitle.setHorizontalAlignment(ALIGN_CENTER);
 	addChild(&mGameTitle);
 
 	mGrid.setPosition(24, mSize.y() * 0.15f);
@@ -306,8 +307,6 @@ void GridGameListView::initMDLabels()
 
 void GridGameListView::initMDValues()
 {
-	using namespace Eigen;
-
 	std::vector<TextComponent*> labels = getMDLabels();
 	std::vector<GuiComponent*> values = getMDValues();
 

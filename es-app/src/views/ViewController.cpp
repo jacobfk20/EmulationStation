@@ -8,6 +8,7 @@
 #include "views/gamelist/DetailedGameListView.h"
 #include "views/gamelist/IGameListView.h"
 #include "views/gamelist/VideoGameListView.h"
+#include "views/gamelist/GridGameListView.h"
 #include "views/SystemView.h"
 #include "FileFilterIndex.h"
 #include "Log.h"
