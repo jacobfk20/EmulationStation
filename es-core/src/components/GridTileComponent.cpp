@@ -315,8 +315,12 @@ void GridTileComponent::setTextColor(unsigned int color) {
 	mText->setColor(color);
 }
 
-void GridTileComponent::setTextAlignment(Alignment align) {
-	mText->setAlignment(align);
+void GridTileComponent::setTextVerticalAlignment(Alignment align) {
+	mText->setVerticalAlignment(align);
+}
+
+void GridTileComponent::setTextHorizontalAlignment(Alignment align) {
+	mText->setHorizontalAlignment(align);
 }
 
 void GridTileComponent::setUppercase(bool uppercase) {
@@ -324,7 +328,7 @@ void GridTileComponent::setUppercase(bool uppercase) {
 }
 
 void GridTileComponent::setBackgroundPath(const std::string& path) {
-	if (boost::filesystem::exists(path) || ResourceManager::getInstance()->fileExists(path)) {
+	if (ResourceManager::getInstance()->fileExists(path)) {
 		if (!bThemeBackground) mBackground.setImagePath(path);
 	}
 	else {

@@ -67,7 +67,8 @@ public:
 
 	void setText(const std::string& text);
 	void setTextColor(unsigned int color);
-	void setTextAlignment(Alignment align);
+	void setTextVerticalAlignment(Alignment align);
+	void setTextHorizontalAlignment(Alignment align);
 	void setUppercase(bool uppercase);
 
 	void setBackgroundPath(const std::string& path);
